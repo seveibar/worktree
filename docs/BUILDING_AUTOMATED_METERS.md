@@ -13,6 +13,7 @@ If a GET request is sent and has the `Accept: application/json` header, output t
   // REQUIRED
 
   "name": "My Custom Github Meter",
+  "keyName": "custom_github_meter",
 
   // description can be written in markdown
   "description": "This meter uses the github api to...",

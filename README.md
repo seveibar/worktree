@@ -21,6 +21,13 @@ A couple ways to mitigate this problem:
 - If your tree is too easy, expand the tree, no harm done!
 - Change your trees weekly, archive old ones and construct new ones that represent your goals for the week
 
+### Regressions and Noise
+
+Some things are outside of our control or sometimes we slip. Reseting a work tree or meter is very disheartening and should be avoided. Here are some tips to avoid these situations:
+
+- If a meter doesn't increase with your effort, or is outside your control, try to find another meter that you can control.
+- Archive your work tree and start from scratch rather than repeating the same tree you've regressed on. You can update the rewards to reflect updates in your work.
+
 ## Shared Work Trees
 
 Work trees can be a way to keep a team motivated and get everyone on the same page about the progress of team.
@@ -34,3 +41,5 @@ Automated Meters are simple to build for web programmers, basically you just run
 I was examining the relationship between playing video games and working on software/marketing tasks. I noticed that I could play a video game for 16 hours and eagerly return to my desk in the short breaks I took. But working, I could barely do a consecutive 8 hours and dreaded returning to the desk to struggle through another problem.
 
 I believe a key factor in this was the perceived lack of progression in work. "Grind" video games with technology trees and achievement systems give the player a sense of long-term and short-term tasks and vision, as well as a freedom to choose the next steps.
+
+The concept of a work tree is in opposition to "Daily Goals". I think work trees are much more powerful in that they are always actionable, you never "complete your goal for the day", so you never have to stop playing.
