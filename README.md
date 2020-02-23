@@ -27,7 +27,7 @@ Work trees can be a way to keep a team motivated and get everyone on the same pa
 
 ## Creating new Automated Meters
 
-Automated Meters are simple to build for web programmers, basically you just run a single HTTP API endpoint that accepts a JSON object of credentials or details then output a JSON array of meters. [Read more about building Automated Meters](#).
+Automated Meters are simple to build for web programmers, basically you just run a single HTTP API endpoint that accepts a JSON object of credentials or details then output a JSON array of meters. [Read more about building Automated Meters](https://github.com/seveibar/work-tree/blob/master/docs/BUILDING_AUTOMATED_METERS.md).
 
 ## Motivation
 
