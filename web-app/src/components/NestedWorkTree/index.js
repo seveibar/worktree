@@ -5,6 +5,7 @@ import TreeSquare from "../TreeSquare"
 import { default as setIn } from "lodash/set"
 import * as colors from "@material-ui/core/colors"
 import getTreeProgress from "../../methods/get-tree-progress.js"
+import AddSquare from "../AddSquare"
 
 const Container = styled("div")({
   position: "relative",
@@ -19,11 +20,17 @@ const Children = styled("div")({
   justifyContent: "center"
 })
 
+const getNewAchievement = () => ({ name: "New Achievement" })
+
 const NestedWorkTree = ({
   nestedTree,
   onDrawn,
   unlocked = true,
-  meters = {}
+  meters = {},
+  isRoot = true,
+  inEditMode = false,
+  onChangeFlatTree,
+  onAddChild
 }) => {
   let { complete, progress } = nestedTree.state || {}
   if (progress === undefined) progress = complete ? 100 : 0
@@ -95,8 +102,45 @@ const NestedWorkTree = ({
           />
         )}
       </svg>
+      {inEditMode && !isRoot && (
+        <>
+          <AddSquare
+            onClick={() => onAddChild("left")}
+            style={{
+              position: "absolute",
+              top: 60,
+              left: "calc(50% - 120px)"
+            }}
+          />
+          <AddSquare
+            style={{
+              position: "absolute",
+              top: 60,
+              left: "calc(50% + 70px)"
+            }}
+            onClick={() => onAddChild("right")}
+          />
+          {(nestedTree.children || []).length === 0 && (
+            <AddSquare
+              style={{
+                position: "absolute",
+                bottom: -35,
+                left: "calc(50% - 25px)"
+              }}
+              onClick={() =>
+                onChangeFlatTree(
+                  [nestedTree.name, "children"],
+                  [getNewAchievement()]
+                )
+              }
+            />
+          )}
+        </>
+      )}
       <TreeSquare
         {...nestedTree}
+        inEditMode={inEditMode}
+        onChangeFlatTree={onChangeFlatTree}
         meters={meters}
         progress={getTreeProgress(nestedTree, meters)}
         complete={complete}
@@ -108,12 +152,27 @@ const NestedWorkTree = ({
             {(nestedTree.children || []).map((child, childIndex) => (
               <NestedWorkTree
                 key={child.name}
+                isRoot={false}
                 nestedTree={child}
                 meters={meters}
                 unlocked={complete}
+                inEditMode={inEditMode}
+                onChangeFlatTree={onChangeFlatTree}
                 onDrawn={coords =>
                   changeChildCoordinates({ childIndex, coords })
                 }
+                onAddChild={leftOrRight => {
+                  const addBefore =
+                    leftOrRight === "left" ? childIndex : childIndex + 1
+                  onChangeFlatTree(
+                    [nestedTree.name, "children"],
+                    [
+                      ...nestedTree.children.slice(0, addBefore),
+                      getNewAchievement(),
+                      ...nestedTree.children.slice(addBefore)
+                    ]
+                  )
+                }}
               />
             ))}
           </Children>

@@ -12,6 +12,9 @@ const Container = styled("div")({
   width: 120,
   height: 120,
   margin: 20,
+  marginLeft: ({ inEditMode }) => (inEditMode ? 80 : "inherit"),
+  marginRight: ({ inEditMode }) => (inEditMode ? 80 : "inherit"),
+  marginRight: 80,
   marginBottom: 30,
   border: `2px solid ${colors.grey[900]}`,
   borderTop: "none",
@@ -20,7 +23,8 @@ const Container = styled("div")({
   alignItems: "center",
   boxShadow: "0px 3px 3px rgba(0,0,0,0.2)",
   cursor: "pointer",
-  transition: "transform 80ms linear",
+  transition:
+    "transform 80ms linear, margin-left 80ms linear, margin-right 80ms linear",
   "&:hover": {
     transform: "scale(1.05,1.05)"
   },
@@ -123,13 +127,15 @@ export default props => {
     onDrawn,
     unlocked = true,
     complete = true,
-    progress
+    progress,
+    inEditMode
   } = props
 
   const [mouseOver, changeMouseOver] = useState()
   const [fullyOpen, changeFullyOpen] = useState(false)
   return (
     <Container
+      inEditMode={inEditMode}
       onMouseEnter={() => {
         if (!mouseOver) changeMouseOver(true)
       }}
