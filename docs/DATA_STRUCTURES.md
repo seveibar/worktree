@@ -115,27 +115,24 @@ The root work tree has some additional properties.
 
 ## Meter State
 
-After a user imports a meter, we want to track how that meter has increased over time, not just it's current value. A meter's full id is `"userOrOrg"."endpoint"."keyName"`. A meter's `poiHistory` is an abbreviated history that contains the meter's value at "Points of Interest". The server will automatically group the history to save bandwidth. The `poiHistory` doesn't exceed more than 100 entries in length.
+After a user imports a meter, we want to track how that meter has increased over time, not just it's current value. A meter's full id is `"userOrOrg"."endpoint"."keyName"`.
 
 ```javascript
 {
   "my_name.my_github_meter.project_stars": {
     "name": "Github Project Stars",
+    "meterKey": "my_name.my_github_meter.project_stars",
     "value": 100,
     "outputType": "integer",
-    "description": "Stars from project 1...",
-    "poiHistory": [
-      {
-        "at": "2020-02-23T19:16:44.240Z",
-        "value": 110,
-        "delta": 10
-      },
-      {
-        "at": "2020-02-22T19:16:44.240Z",
-        "value": 100,
-        "delta": 0
-      }
-    ]
+    "description": "Stars from project 1..."
   }
 }
 ```
+
+## Requirements
+
+| Requirement Id   | Description                                                                                                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------------- |
+| `mustIncreaseBy` | Must increase by the specified value. The starting value begins when the achievement first becomes available. |
+| `mustBeAtleast`  | The absolute value of the meter must exceed.                                                                  |
+| `mustBe`         | The meter must equal the specified value.                                                                     |

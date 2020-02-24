@@ -20,6 +20,9 @@ storiesOf("NestedWorkTree", module).add("Basic", () => (
       },
       state: {
         complete: true,
+        completeValues: {
+          "fitness_tracker.total_push_ups": 100
+        },
         startTime: "2020-02-23T19:16:44.240Z",
         completeTime: "2020-02-23T19:16:44.240Z"
       },
@@ -32,12 +35,14 @@ storiesOf("NestedWorkTree", module).add("Basic", () => (
             "Okay, so you can do some push ups, but you have no idea what it takes to become a push up master. Show your dedication!",
           requirements: {
             "fitness_tracker.total_push_ups": {
-              mustBeAnAdditional: 200
+              mustIncreaseBy: 200
             }
           },
           state: {
             complete: false,
-            progress: 100,
+            startValues: {
+              "fitness_tracker.total_push_ups": 100
+            },
             startTime: "2020-02-23T19:16:44.240Z"
           },
           children: [
@@ -53,12 +58,11 @@ storiesOf("NestedWorkTree", module).add("Basic", () => (
           rewards: [],
           requirements: {
             "fitness_tracker.total_push_ups": {
-              mustBeAnAdditional: 200
+              mustIncreaseBy: 200
             }
           },
           state: {
             complete: false,
-            progress: 50,
             startTime: "2020-02-23T19:16:44.240Z"
           },
           children: [
@@ -75,6 +79,15 @@ storiesOf("NestedWorkTree", module).add("Basic", () => (
           ]
         }
       ]
+    }}
+    meters={{
+      "fitness_tracker.total_push_ups": {
+        name: "Total Push Ups",
+        description: "",
+        meterKey: "fitness_tracker.total_push_ups",
+        outputType: "integer",
+        value: 130
+      }
     }}
   />
 ))

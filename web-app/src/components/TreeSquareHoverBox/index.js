@@ -28,6 +28,8 @@ const Container = styled("div")({
   width: WIDTH,
   backgroundColor: "#000",
   zIndex: 10,
+  display: "flex",
+  flexDirection: "column",
   boxShadow: "0px 3px 5px rgba(0,0,0,0.3)"
 })
 
@@ -65,7 +67,7 @@ const Sep = styled("div")({
   display: "inline-flex",
   width: "calc(100% - 32px)",
   marginLeft: 16,
-  borderBottom: "2px solid rgba(255,255,255,0.5)"
+  borderBottom: "2px solid rgba(255,255,255,0.2)"
 })
 const RequirementsText = styled("div")({
   color: "#fff",
@@ -131,6 +133,9 @@ export default ({
   name,
   description,
   rewards = [],
+  requirements = [],
+  meters,
+  state,
   progress
 }) => {
   const trackingElmRef = useRef()
@@ -173,13 +178,28 @@ export default ({
         </div>
       </Title>
       <DescriptionContainer>
-        <ReactMarkdown source={description} />
+        <ReactMarkdown
+          source={
+            description || "No Description! How will you know what to do?"
+          }
+        />
       </DescriptionContainer>
-      <Sep />
-      <RequirementsText>Requirements</RequirementsText>
-      <MeterProgressContainer>
-        <MeterProgress />
-      </MeterProgressContainer>
+      {Object.keys(requirements).length > 0 && (
+        <>
+          <Sep />
+          <RequirementsText>Requirements</RequirementsText>
+          <MeterProgressContainer>
+            {Object.entries(requirements).map(([meterKey, requirement]) => (
+              <MeterProgress
+                key={meterKey}
+                meter={meters[meterKey]}
+                requirement={requirement}
+                state={state}
+              />
+            ))}
+          </MeterProgressContainer>
+        </>
+      )}
       {rewards.length > 0 && (
         <>
           {/* <Sep /> */}
@@ -196,6 +216,7 @@ export default ({
           </RewardsContainer>
         </>
       )}
+      <div style={{ flexGrow: 1 }} />
       <Sep />
       <ActionableText>
         {complete ? (

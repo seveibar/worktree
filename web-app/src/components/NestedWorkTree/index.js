@@ -4,6 +4,7 @@ import { styled } from "@material-ui/core/styles"
 import TreeSquare from "../TreeSquare"
 import { default as setIn } from "lodash/set"
 import * as colors from "@material-ui/core/colors"
+import getTreeProgress from "../../methods/get-tree-progress.js"
 
 const Container = styled("div")({
   position: "relative",
@@ -18,7 +19,12 @@ const Children = styled("div")({
   justifyContent: "center"
 })
 
-const NestedWorkTree = ({ nestedTree, onDrawn, unlocked = true }) => {
+const NestedWorkTree = ({
+  nestedTree,
+  onDrawn,
+  unlocked = true,
+  meters = {}
+}) => {
   let { complete, progress } = nestedTree.state || {}
   if (progress === undefined) progress = complete ? 100 : 0
 
@@ -90,12 +96,11 @@ const NestedWorkTree = ({ nestedTree, onDrawn, unlocked = true }) => {
         )}
       </svg>
       <TreeSquare
-        name={nestedTree.name}
-        description={nestedTree.description}
+        {...nestedTree}
+        meters={meters}
+        progress={getTreeProgress(nestedTree, meters)}
         complete={complete}
         unlocked={unlocked}
-        progress={progress}
-        rewards={nestedTree.rewards}
       />
       {(nestedTree.children || []).length > 0 && (
         <>
@@ -104,6 +109,7 @@ const NestedWorkTree = ({ nestedTree, onDrawn, unlocked = true }) => {
               <NestedWorkTree
                 key={child.name}
                 nestedTree={child}
+                meters={meters}
                 unlocked={complete}
                 onDrawn={coords =>
                   changeChildCoordinates({ childIndex, coords })

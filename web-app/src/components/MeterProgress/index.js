@@ -58,26 +58,50 @@ const ProgressBar = styled("div")({
   }
 })
 
-export default () => {
+export default ({ requirement, meter, state }) => {
+  const startValue = (state.startValues || {})[meter.meterKey] || 0
+  const endValue = (state.endValues || {})[meter.meterKey] || meter.value
+  let absoluteGoal, distanceToGoal, goalSize, progress
+  if (
+    meter.outputType === "integer" ||
+    meter.outputType === "float" ||
+    meter.outputType === "percent"
+  ) {
+    absoluteGoal =
+      requirement.mustBeAtleast || startValue + requirement.mustIncreaseBy
+    distanceToGoal = endValue - startValue
+    goalSize = absoluteGoal - startValue
+    progress = (distanceToGoal / goalSize) * 100
+  } else if (meter.outputType === "boolean") {
+    progress = requirement.mustBe === endValue ? 100 : 0
+  }
   return (
     <Container>
       <IconContainer>
-        <AutoIcon className="icon" name="8" />
+        <AutoIcon className="icon" name={meter.name} />
       </IconContainer>
       <RightOfIconContainer>
         <TopContent>
-          <MetricName>Push Ups</MetricName>
-          <ProgressText>100 of 100</ProgressText>
+          <MetricName>{meter.name}</MetricName>
+          <ProgressText>
+            {meter.outputType === "boolean"
+              ? ""
+              : requirement.mustIncreaseBy
+              ? `${Math.min(distanceToGoal, goalSize)} of ${goalSize}`
+              : `${Math.min(endValue, absoluteGoal)}/${absoluteGoal}`}
+          </ProgressText>
           <div style={{ width: 32, height: 18 }}>
             <Checkbox
               style={{ color: "#fff", marginTop: -8, width: 18, height: 18 }}
-              // checked={false}
-              checked
+              checked={progress >= 100}
             />
           </div>
         </TopContent>
         <ProgressBar>
-          <div className="topbar" style={{ width: `${100}%` }} />
+          <div
+            className="topbar"
+            style={{ width: `${Math.min(100, progress)}%` }}
+          />
           <div className="bottombar" />
         </ProgressBar>
       </RightOfIconContainer>
