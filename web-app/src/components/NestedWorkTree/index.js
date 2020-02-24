@@ -91,9 +91,11 @@ const NestedWorkTree = ({ nestedTree, onDrawn, unlocked = true }) => {
       </svg>
       <TreeSquare
         name={nestedTree.name}
+        description={nestedTree.description}
         complete={complete}
         unlocked={unlocked}
         progress={progress}
+        rewards={nestedTree.rewards}
       />
       {(nestedTree.children || []).length > 0 && (
         <>

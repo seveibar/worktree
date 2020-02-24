@@ -5,8 +5,14 @@ import { styled } from "@material-ui/core/styles"
 import AutoIcon from "../AutoIcon"
 import * as colors from "@material-ui/core/colors"
 import Color from "color"
+import ReactMarkdown from "react-markdown"
+import MeterProgress from "../MeterProgress"
+import TrophyIcon from "@material-ui/icons/EmojiEvents"
+import LockIcon from "@material-ui/icons/Lock"
+import UnlockIcon from "@material-ui/icons/LockOpen"
+import SmileIcon from "@material-ui/icons/EmojiEmotions"
 
-const WIDTH = 320
+const WIDTH = 360
 const HEIGHT = 300
 
 const TrackingContainer = styled("div")({
@@ -18,7 +24,7 @@ const TrackingContainer = styled("div")({
 const Container = styled("div")({
   position: "absolute",
   transition: "opacity 60ms ease, transform 120ms ease",
-  height: HEIGHT,
+  minHeight: HEIGHT,
   width: WIDTH,
   backgroundColor: "#000",
   zIndex: 10,
@@ -48,7 +54,85 @@ const Title = styled("div")({
   }
 })
 
-export default ({ open, fullyOpen, name }) => {
+const DescriptionContainer = styled("div")({
+  color: "#fff",
+  padding: 16,
+  paddingTop: 8,
+  paddingBottom: 0,
+  minHeight: 100
+})
+const Sep = styled("div")({
+  display: "inline-flex",
+  width: "calc(100% - 32px)",
+  marginLeft: 16,
+  borderBottom: "2px solid rgba(255,255,255,0.5)"
+})
+const RequirementsText = styled("div")({
+  color: "#fff",
+  marginTop: 8,
+  paddingLeft: 16,
+  // textTransform: "uppercase",
+  fontWeight: 800,
+  fontSize: 12
+})
+const MeterProgressContainer = styled("div")({
+  padding: 8,
+  paddingLeft: 32,
+  paddingRight: 32
+})
+const RewardsContainer = styled("div")({
+  padding: 8,
+  paddingLeft: 32,
+  paddingRight: 32
+})
+const Reward = styled("div")({
+  display: "flex",
+  alignItems: "center",
+  marginTop: 8,
+  marginBottom: 8,
+  "& .icon-container": {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  "& .icon": {
+    color: "#fff",
+    marginRight: 8,
+    opacity: 0.8,
+    fontSize: 18
+  },
+  "& .text": {
+    color: "#fff",
+    fontWeight: 600
+  }
+})
+const ActionableText = styled("div")({
+  display: "flex",
+  padding: 16,
+  fontSize: 16,
+  color: "#fff",
+  fontWeight: 600,
+  alignItems: "center",
+  "& > *": { display: "inline" },
+  marginBottom: 8,
+  "& .icon": {
+    marginRight: 8
+  },
+  "& .action": {
+    marginLeft: 8,
+    opacity: 0.8
+  }
+})
+
+export default ({
+  open,
+  fullyOpen,
+  complete,
+  name,
+  description,
+  rewards = [],
+  progress
+}) => {
   const trackingElmRef = useRef()
   const windowSize = useWindowSize()
   const color = colors.blue
@@ -81,13 +165,62 @@ export default ({ open, fullyOpen, name }) => {
       }}
     >
       <Title>
-        <div className="icon-container" style={{ backgroundColor: color[500] }}>
+        <div className="icon-container" style={{ backgroundColor: color[300] }}>
           <AutoIcon name={name} className="icon" />
         </div>
-        <div style={{ backgroundColor: color[400] }} className="text">
+        <div style={{ backgroundColor: color[500] }} className="text">
           {name}
         </div>
       </Title>
+      <DescriptionContainer>
+        <ReactMarkdown source={description} />
+      </DescriptionContainer>
+      <Sep />
+      <RequirementsText>Requirements</RequirementsText>
+      <MeterProgressContainer>
+        <MeterProgress />
+      </MeterProgressContainer>
+      {rewards.length > 0 && (
+        <>
+          {/* <Sep /> */}
+          <RequirementsText>Unlocks</RequirementsText>
+          <RewardsContainer>
+            {rewards.map(r => (
+              <Reward key={r}>
+                <div className="icon-container">
+                  <TrophyIcon className="icon" />
+                </div>
+                <div className="text">{r}</div>
+              </Reward>
+            ))}
+          </RewardsContainer>
+        </>
+      )}
+      <Sep />
+      <ActionableText>
+        {complete ? (
+          <>
+            <SmileIcon className="icon" />
+            <div>Unlocked!</div>
+          </>
+        ) : (
+          <>
+            {progress < 1 ? (
+              <LockIcon className="icon" />
+            ) : (
+              <UnlockIcon className="icon" />
+            )}
+            <div>
+              {progress < 1
+                ? "Complete Requirements to Unlock"
+                : "Ready to Unlock!"}
+            </div>
+            {progress >= 1 && (
+              <div className="action">{"(Click and Hold)"}</div>
+            )}
+          </>
+        )}
+      </ActionableText>
     </Container>,
     window.document.body
   )

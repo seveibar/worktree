@@ -71,6 +71,7 @@ const LockContainer = styled("div")({
   display: "flex",
   "& .icon": {
     color: "#fff",
+    marginTop: 20,
     transform: "rotate(15deg)",
     width: 64,
     height: 64
@@ -114,14 +115,17 @@ const ProgressContainer = styled("div")({
   }
 })
 
-export default ({
-  name,
-  description,
-  onDrawn,
-  unlocked = true,
-  complete = true,
-  progress
-}) => {
+export default props => {
+  const {
+    name,
+    description,
+    rewards = [],
+    onDrawn,
+    unlocked = true,
+    complete = true,
+    progress
+  } = props
+
   const [mouseOver, changeMouseOver] = useState()
   const [fullyOpen, changeFullyOpen] = useState(false)
   return (
@@ -155,12 +159,7 @@ export default ({
           </ProgressContainer>
         </IncompleteContainer>
       )}
-      <TreeSquareHoverBox
-        open={mouseOver}
-        fullyOpen={fullyOpen}
-        name={name}
-        description={description}
-      />
+      <TreeSquareHoverBox {...props} open={mouseOver} fullyOpen={fullyOpen} />
     </Container>
   )
 }

@@ -28,6 +28,8 @@ storiesOf("NestedWorkTree", module).add("Basic", () => (
           name: "Advanced Push Upper",
           parent: "Beginner Push Upper",
           rewards: ["Buy Dumbbells", "Buy Yoga Mat"],
+          description:
+            "Okay, so you can do some push ups, but you have no idea what it takes to become a push up master. Show your dedication!",
           requirements: {
             "fitness_tracker.total_push_ups": {
               mustBeAnAdditional: 200
@@ -37,7 +39,13 @@ storiesOf("NestedWorkTree", module).add("Basic", () => (
             complete: false,
             progress: 100,
             startTime: "2020-02-23T19:16:44.240Z"
-          }
+          },
+          children: [
+            {
+              name: "Push Up Master",
+              parent: "Advanced Push Upper"
+            }
+          ]
         },
         {
           name: "Beginner Sit Ups",
