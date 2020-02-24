@@ -59,6 +59,9 @@ storiesOf("NestedWorkTree", module).add("Basic", () => (
           requirements: {
             "fitness_tracker.total_push_ups": {
               mustIncreaseBy: 200
+            },
+            "fitness_tracker.total_sit_ups": {
+              mustIncreaseBy: 50
             }
           },
           state: {
@@ -87,6 +90,13 @@ storiesOf("NestedWorkTree", module).add("Basic", () => (
         meterKey: "fitness_tracker.total_push_ups",
         outputType: "integer",
         value: 130
+      },
+      "fitness_tracker.total_sit_ups": {
+        name: "Total Sit Ups",
+        description: "",
+        meterKey: "fitness_tracker.total_sit_ups",
+        outputType: "integer",
+        value: 2
       }
     }}
   />

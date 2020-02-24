@@ -155,7 +155,7 @@ export default props => {
             className={classnames({ unlockable: progress >= 100 })}
           >
             <UnlockIcon className="icon" />
-            {progress}%
+            {Math.floor(progress)}%
           </ProgressContainer>
         </IncompleteContainer>
       )}

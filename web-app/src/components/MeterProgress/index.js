@@ -57,8 +57,19 @@ const ProgressBar = styled("div")({
     height: 4
   }
 })
+const NoMeter = styled("div")({
+  color: "#fff",
+  fontWeight: "bold",
+  backgroundColor: colors.red[600],
+  textAlign: "center",
+  width: "100%",
+  padding: 8,
+  marginTop: 8,
+  marginBottom: 8
+})
 
 export default ({ requirement, meter, state }) => {
+  if (!meter) return <NoMeter>Missing Meter!</NoMeter>
   const startValue = (state.startValues || {})[meter.meterKey] || 0
   const endValue = (state.endValues || {})[meter.meterKey] || meter.value
   let absoluteGoal, distanceToGoal, goalSize, progress
