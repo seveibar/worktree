@@ -1,11 +1,17 @@
 import React from "react"
 import AutoIcon from "../AutoIcon"
+import LockIcon from "@material-ui/icons/Lock"
+import UnlockIcon from "@material-ui/icons/LockOpen"
 import { styled } from "@material-ui/core/styles"
 import * as colors from "@material-ui/core/colors"
+import classnames from "classnames"
 
 const Container = styled("div")({
+  position: "relative",
   width: 120,
   height: 120,
+  margin: 20,
+  marginBottom: 30,
   border: `2px solid ${colors.grey[900]}`,
   borderTop: "none",
   display: "flex",
@@ -51,13 +57,89 @@ const IconContainer = styled("div")({
     "radial-gradient(circle, rgba(3,155,229,1) 0%, rgba(129,212,250,1) 100%)"
 })
 
-export default ({ name }) => {
+const LockContainer = styled("div")({
+  position: "absolute",
+  left: 0,
+  top: 0,
+  right: 0,
+  bottom: 0,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "rgba(0,0,0,0.5)",
+  display: "flex",
+  "& .icon": {
+    color: "#fff",
+    transform: "rotate(15deg)",
+    width: 64,
+    height: 64
+  }
+})
+
+const IncompleteContainer = styled("div")({
+  position: "absolute",
+  left: 0,
+  top: 0,
+  right: 0,
+  bottom: 0,
+  justifyContent: "flex-end",
+  alignItems: "flex-end",
+  backgroundColor: "rgba(0,0,0,0.5)",
+  display: "flex"
+})
+const ProgressContainer = styled("div")({
+  position: "absolute",
+  display: "flex",
+  alignItems: "center",
+  right: 0,
+  bottom: 0,
+  padding: 8,
+  color: "#fff",
+  backgroundColor: colors.orange[500],
+  boxShadow: "0px 0px 5px rgba(0,0,0,0.2)",
+  borderTopLeftRadius: 50,
+  borderBottomLeftRadius: 50,
+  fontWeight: 500,
+  textShadow: "0px 0px 3px rgba(0,0,0,0.5)",
+  paddingLeft: 10,
+  "&.unlockable": {
+    backgroundColor: colors.green[500]
+  },
+  "& .icon": {
+    color: "#fff",
+    width: 20,
+    height: 20,
+    marginRight: 4
+  }
+})
+
+export default ({
+  name,
+  onDrawn,
+  unlocked = true,
+  complete = true,
+  progress
+}) => {
   return (
     <Container>
       <Title>{name}</Title>
       <IconContainer>
         <StyledAutoIcon />
       </IconContainer>
+      {!unlocked && (
+        <LockContainer>
+          <LockIcon className="icon" />
+        </LockContainer>
+      )}
+      {unlocked && !complete && (
+        <IncompleteContainer>
+          <ProgressContainer
+            className={classnames({ unlockable: progress >= 100 })}
+          >
+            <UnlockIcon className="icon" />
+            {progress}%
+          </ProgressContainer>
+        </IncompleteContainer>
+      )}
     </Container>
   )
 }
