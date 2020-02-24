@@ -1,10 +1,11 @@
-import React from "react"
+import React, { useState } from "react"
 import AutoIcon from "../AutoIcon"
 import LockIcon from "@material-ui/icons/Lock"
 import UnlockIcon from "@material-ui/icons/LockOpen"
 import { styled } from "@material-ui/core/styles"
 import * as colors from "@material-ui/core/colors"
 import classnames from "classnames"
+import TreeSquareHoverBox from "../TreeSquareHoverBox"
 
 const Container = styled("div")({
   position: "relative",
@@ -22,7 +23,8 @@ const Container = styled("div")({
   transition: "transform 80ms linear",
   "&:hover": {
     transform: "scale(1.05,1.05)"
-  }
+  },
+  zIndex: 1
 })
 
 const Title = styled("div")({
@@ -114,16 +116,29 @@ const ProgressContainer = styled("div")({
 
 export default ({
   name,
+  description,
   onDrawn,
   unlocked = true,
   complete = true,
   progress
 }) => {
+  const [mouseOver, changeMouseOver] = useState()
+  const [fullyOpen, changeFullyOpen] = useState(false)
   return (
-    <Container>
+    <Container
+      onMouseEnter={() => {
+        if (!mouseOver) changeMouseOver(true)
+      }}
+      onMouseLeave={() => {
+        if (!mouseOver) return
+        changeMouseOver(false)
+        if (fullyOpen) changeFullyOpen(false)
+      }}
+      onClick={() => changeFullyOpen(true)}
+    >
       <Title>{name}</Title>
       <IconContainer>
-        <StyledAutoIcon />
+        <StyledAutoIcon name={name} />
       </IconContainer>
       {!unlocked && (
         <LockContainer>
@@ -140,6 +155,12 @@ export default ({
           </ProgressContainer>
         </IncompleteContainer>
       )}
+      <TreeSquareHoverBox
+        open={mouseOver}
+        fullyOpen={fullyOpen}
+        name={name}
+        description={description}
+      />
     </Container>
   )
 }
