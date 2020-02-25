@@ -138,13 +138,23 @@ export default ({
   meters,
   inEditMode,
   state,
-  progress
+  progress,
+  onChange
 }) => {
   const trackingElmRef = useRef()
   const windowSize = useWindowSize()
   const color = colors.blue
 
   const titleElm = useRef()
+  useEffect(() => {
+    if (!fullyOpen) {
+      // Save any changes
+      const newTitle = titleElm.textContent || title
+      if (newTitle !== name) {
+        onChange(name, newTitle)
+      }
+    }
+  }, [fullyOpen])
 
   const [position, changePosition] = useState({})
 
