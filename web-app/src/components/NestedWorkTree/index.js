@@ -1,5 +1,6 @@
 import React, { useRef, useReducer, useState, useEffect } from "react"
-import { useWindowSize, useInterval } from "react-use"
+import { useInterval } from "react-use"
+import useWindowSize from "../../hooks/use-window-size.js"
 import { styled } from "@material-ui/core/styles"
 import TreeSquare from "../TreeSquare"
 import { default as setIn } from "lodash/set"
@@ -25,6 +26,13 @@ const getNewAchievement = () => ({
   name: "New Achievement " + Math.floor(Math.random() * 10000)
 })
 
+const getElmCoords = elm => {
+  const d = elm.getBoundingClientRect()
+  d.x += window.pageXOffset
+  d.y += window.pageYOffset
+  return d
+}
+
 const NestedWorkTree = ({
   nestedTree,
   onDrawn,
@@ -48,7 +56,7 @@ const NestedWorkTree = ({
 
   useEffect(() => {
     if (containerRef.current !== null) {
-      const myCoords = containerRef.current.getBoundingClientRect()
+      const myCoords = getElmCoords(containerRef.current)
       changeContainerCoords(myCoords)
       if (onDrawn) onDrawn(myCoords)
     }
@@ -59,7 +67,7 @@ const NestedWorkTree = ({
   useInterval(
     () => {
       if (containerRef.current !== null) {
-        const newCoords = containerRef.current.getBoundingClientRect()
+        const newCoords = getElmCoords(containerRef.current)
         if (!isEqual(containerCoords, newCoords)) {
           changeContainerCoords(newCoords)
           if (onDrawn) onDrawn(newCoords)

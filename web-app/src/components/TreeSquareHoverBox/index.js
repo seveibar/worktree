@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react"
-import { useWindowSize } from "react-hooks-window-size"
+import useWindowSize from "../../hooks/use-window-size.js"
 import { createPortal } from "react-dom"
 import { styled } from "@material-ui/core/styles"
 import AutoIcon from "../AutoIcon"
@@ -148,6 +148,8 @@ export default ({
   useEffect(() => {
     if (!trackingElmRef.current) return
     let { x: tx, y: ty } = trackingElmRef.current.getBoundingClientRect()
+    tx += window.pageXOffset
+    ty += window.pageYOffset
     if (tx > (windowSize.width * 3) / 4) {
       tx -= 145 + WIDTH
     }
@@ -161,6 +163,7 @@ export default ({
   const portaledElm = createPortal(
     <Container
       style={{
+        visibility: open ? "visible" : "hidden",
         opacity: open ? 1 : 0,
         transform: open ? "scale(1,1)" : "scale(0.9, 0.9)",
         pointerEvents: "none",

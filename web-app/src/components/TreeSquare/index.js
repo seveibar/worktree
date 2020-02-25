@@ -120,7 +120,7 @@ const ProgressContainer = styled("div")({
 })
 
 export default props => {
-  const {
+  let {
     name,
     description,
     rewards = [],
@@ -129,6 +129,11 @@ export default props => {
     progress,
     inEditMode
   } = props
+
+  if (inEditMode) {
+    available = true
+    complete = true
+  }
 
   const [mouseOver, changeMouseOver] = useState()
   const [fullyOpen, changeFullyOpen] = useState(false)
