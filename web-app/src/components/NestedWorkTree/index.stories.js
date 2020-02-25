@@ -7,6 +7,7 @@ import { action } from "@storybook/addon-actions"
 import getNestedTreePath from "../../methods/get-nested-tree-path.js"
 import cloneDeep from "lodash/cloneDeep"
 import setIn from "lodash/set"
+import getIn from "lodash/get"
 
 import NestedWorkTree from "./"
 
@@ -127,12 +128,22 @@ storiesOf("NestedWorkTree", module)
         <NestedWorkTree
           inEditMode={inEditMode}
           onChangeFlatTree={(flatTreePath, newValue) => {
-            const subTreeName = flatTreePath[0]
+            const subTreeName =
+              typeof flatTreePath === "string" ? flatTreePath : flatTreePath[0]
             const nestedSubTreePath = getNestedTreePath(nestedTree, subTreeName)
+
+            if (typeof flatTreePath === "string") {
+              newValue = {
+                ...getIn(nestedTree, nestedSubTreePath),
+                ...newValue
+              }
+            }
             changeNestedTree(
               setIn(
                 cloneDeep(nestedTree),
-                nestedSubTreePath.concat(flatTreePath.slice(1)),
+                typeof flatTreePath === "string"
+                  ? nestedSubTreePath
+                  : nestedSubTreePath.concat(flatTreePath.slice(1)),
                 newValue
               )
             )

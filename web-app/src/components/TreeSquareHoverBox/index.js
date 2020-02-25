@@ -59,8 +59,8 @@ const Title = styled("div")({
 const DescriptionContainer = styled("div")({
   color: "#fff",
   padding: 16,
-  paddingTop: 8,
-  paddingBottom: 0,
+  // paddingTop: 8,
+  // paddingBottom: 0,
   minHeight: 100
 })
 const Sep = styled("div")({
@@ -126,6 +126,8 @@ const ActionableText = styled("div")({
   }
 })
 
+const defaultDescription = "No Description! How will you know what to do?"
+
 export default ({
   open,
   fullyOpen,
@@ -139,19 +141,30 @@ export default ({
   inEditMode,
   state,
   progress,
-  onChange
+  onChangeFlatTree
 }) => {
   const trackingElmRef = useRef()
   const windowSize = useWindowSize()
   const color = colors.blue
 
   const titleElm = useRef()
+  const descriptionElm = useRef()
   useEffect(() => {
-    if (!fullyOpen) {
+    if (!fullyOpen && titleElm.current) {
       // Save any changes
-      const newTitle = titleElm.textContent || title
-      if (newTitle !== name) {
-        onChange(name, newTitle)
+      const modifications = {}
+      const newName = titleElm.current.innerText
+      if (newName !== name) modifications.name = newName
+
+      const newDescription = descriptionElm.current.innerText
+      if (
+        newDescription !== description &&
+        newDescription !== defaultDescription
+      )
+        modifications.description = newDescription
+
+      if (Object.keys(modifications).length > 0) {
+        onChangeFlatTree(name, modifications)
       }
     }
   }, [fullyOpen])
@@ -176,8 +189,12 @@ export default ({
   const portaledElm = createPortal(
     <Container
       style={{
-        opacity: open ? 1 : 0,
-        transform: open ? "scale(1,1)" : "scale(0.9, 0.9)",
+        opacity: fullyOpen ? 1 : open ? 0.95 : 0,
+        transform: fullyOpen
+          ? "scale(1,1)"
+          : open
+          ? "scale(0.95,0.95)"
+          : "scale(0.85, 0.85)",
         pointerEvents: !fullyOpen ? "none" : "inherit",
         backgroundColor: Color(color[800])
           .alpha(0.98)
@@ -190,7 +207,8 @@ export default ({
           <AutoIcon name={name} className="icon" />
         </div>
         <div
-          contentEditable
+          suppressContentEditableWarning={true}
+          contentEditable={inEditMode && fullyOpen}
           ref={titleElm}
           style={{ backgroundColor: color[500] }}
           className="text"
@@ -198,12 +216,12 @@ export default ({
           {name}
         </div>
       </Title>
-      <DescriptionContainer>
-        <ReactMarkdown
-          source={
-            description || "No Description! How will you know what to do?"
-          }
-        />
+      <DescriptionContainer
+        ref={descriptionElm}
+        contentEditable={inEditMode && fullyOpen}
+        suppressContentEditableWarning={true}
+      >
+        {description || defaultDescription}
       </DescriptionContainer>
       {Object.keys(requirements).length > 0 && (
         <>

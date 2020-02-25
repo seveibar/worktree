@@ -127,7 +127,8 @@ export default props => {
     available = true,
     complete = true,
     progress,
-    inEditMode
+    inEditMode,
+    onChange
   } = props
 
   if (inEditMode) {
