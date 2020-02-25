@@ -136,12 +136,15 @@ export default ({
   rewards = [],
   requirements = [],
   meters,
+  inEditMode,
   state,
   progress
 }) => {
   const trackingElmRef = useRef()
   const windowSize = useWindowSize()
   const color = colors.blue
+
+  const titleElm = useRef()
 
   const [position, changePosition] = useState({})
 
@@ -163,10 +166,9 @@ export default ({
   const portaledElm = createPortal(
     <Container
       style={{
-        visibility: open ? "visible" : "hidden",
         opacity: open ? 1 : 0,
         transform: open ? "scale(1,1)" : "scale(0.9, 0.9)",
-        pointerEvents: "none",
+        pointerEvents: !fullyOpen ? "none" : "inherit",
         backgroundColor: Color(color[800])
           .alpha(0.98)
           .string(),
@@ -177,7 +179,12 @@ export default ({
         <div className="icon-container" style={{ backgroundColor: color[300] }}>
           <AutoIcon name={name} className="icon" />
         </div>
-        <div style={{ backgroundColor: color[500] }} className="text">
+        <div
+          contentEditable
+          ref={titleElm}
+          style={{ backgroundColor: color[500] }}
+          className="text"
+        >
           {name}
         </div>
       </Title>

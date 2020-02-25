@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import AutoIcon from "../AutoIcon"
 import LockIcon from "@material-ui/icons/Lock"
 import UnlockIcon from "@material-ui/icons/LockOpen"
@@ -137,6 +137,14 @@ export default props => {
 
   const [mouseOver, changeMouseOver] = useState()
   const [fullyOpen, changeFullyOpen] = useState(false)
+  useEffect(() => {
+    if (mouseOver || !fullyOpen) return
+    const timeout = setTimeout(() => {
+      changeFullyOpen(false)
+    }, 500)
+    return () => clearTimeout(timeout)
+  }, [fullyOpen, mouseOver])
+
   return (
     <Container
       inEditMode={inEditMode}
@@ -146,7 +154,6 @@ export default props => {
       onMouseLeave={() => {
         if (!mouseOver) return
         changeMouseOver(false)
-        if (fullyOpen) changeFullyOpen(false)
       }}
       onClick={() => changeFullyOpen(true)}
     >
@@ -169,7 +176,12 @@ export default props => {
           </ProgressContainer>
         </IncompleteContainer>
       )}
-      <TreeSquareHoverBox {...props} open={mouseOver} fullyOpen={fullyOpen} />
+      <TreeSquareHoverBox
+        {...props}
+        inEditMode={inEditMode}
+        open={mouseOver || fullyOpen}
+        fullyOpen={fullyOpen}
+      />
     </Container>
   )
 }
