@@ -1,11 +1,12 @@
 import React, { useRef, useReducer, useState, useEffect } from "react"
-import { useWindowSize } from "react-hooks-window-size"
+import { useWindowSize, useInterval } from "react-use"
 import { styled } from "@material-ui/core/styles"
 import TreeSquare from "../TreeSquare"
 import { default as setIn } from "lodash/set"
 import * as colors from "@material-ui/core/colors"
 import getTreeProgress from "../../methods/get-tree-progress.js"
 import AddSquare from "../AddSquare"
+import isEqual from "lodash/isEqual"
 
 const Container = styled("div")({
   position: "relative",
@@ -20,19 +21,22 @@ const Children = styled("div")({
   justifyContent: "center"
 })
 
-const getNewAchievement = () => ({ name: "New Achievement" })
+const getNewAchievement = () => ({
+  name: "New Achievement " + Math.floor(Math.random() * 10000)
+})
 
 const NestedWorkTree = ({
   nestedTree,
   onDrawn,
-  unlocked = true,
+  available = false,
   meters = {},
   isRoot = true,
   inEditMode = false,
   onChangeFlatTree,
   onAddChild
 }) => {
-  let { complete, progress } = nestedTree.state || {}
+  let { complete = false, progress } = nestedTree.state || {}
+  if (complete) available = true
   if (progress === undefined) progress = complete ? 100 : 0
 
   const windowSize = useWindowSize()
@@ -51,6 +55,20 @@ const NestedWorkTree = ({
     return () => {}
   }, [containerRef, windowSize.width, windowSize.height])
 
+  // This is all to handle children being added
+  useInterval(
+    () => {
+      if (containerRef.current !== null) {
+        const newCoords = containerRef.current.getBoundingClientRect()
+        if (!isEqual(containerCoords, newCoords)) {
+          changeContainerCoords(newCoords)
+          if (onDrawn) onDrawn(newCoords)
+        }
+      }
+    },
+    inEditMode ? 20 : null
+  )
+
   const [svgPath, changeSVGPath] = useState()
 
   useEffect(() => {
@@ -66,8 +84,8 @@ const NestedWorkTree = ({
       bottomOfRootSquare[1] + 30
     ]
     const childTouchPoints = childCoordinates.current
-      .map(({ x, y, width }) => x - containerCoords.x + width / 2)
-      .sort()
+      .map(({ x, y, width }) => parseFloat(x) - containerCoords.x + width / 2)
+      .sort((a, b) => a - b)
 
     changeSVGPath(
       [
@@ -124,7 +142,7 @@ const NestedWorkTree = ({
             <AddSquare
               style={{
                 position: "absolute",
-                bottom: -35,
+                top: 150,
                 left: "calc(50% - 25px)"
               }}
               onClick={() =>
@@ -144,7 +162,7 @@ const NestedWorkTree = ({
         meters={meters}
         progress={getTreeProgress(nestedTree, meters)}
         complete={complete}
-        unlocked={unlocked}
+        available={available}
       />
       {(nestedTree.children || []).length > 0 && (
         <>
@@ -155,7 +173,7 @@ const NestedWorkTree = ({
                 isRoot={false}
                 nestedTree={child}
                 meters={meters}
-                unlocked={complete}
+                available={complete}
                 inEditMode={inEditMode}
                 onChangeFlatTree={onChangeFlatTree}
                 onDrawn={coords =>

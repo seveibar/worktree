@@ -1,9 +1,12 @@
 // @flow
 
-import React from "react"
+import React, { useState } from "react"
 
 import { storiesOf } from "@storybook/react"
 import { action } from "@storybook/addon-actions"
+import getNestedTreePath from "../../methods/get-nested-tree-path.js"
+import cloneDeep from "lodash/cloneDeep"
+import setIn from "lodash/set"
 
 import NestedWorkTree from "./"
 
@@ -116,3 +119,28 @@ storiesOf("NestedWorkTree", module)
       meters={exampleMeters}
     />
   ))
+  .add("Controlled Edit Mode", () => {
+    const [inEditMode, changeInEditMode] = useState()
+    const [nestedTree, changeNestedTree] = useState(exampleTree)
+    return (
+      <div onClick={() => changeInEditMode(true)}>
+        <NestedWorkTree
+          inEditMode={inEditMode}
+          onChangeFlatTree={(flatTreePath, newValue) => {
+            const subTreeName = flatTreePath[0]
+            const nestedSubTreePath = getNestedTreePath(nestedTree, subTreeName)
+            changeNestedTree(
+              setIn(
+                cloneDeep(nestedTree),
+                nestedSubTreePath.concat(flatTreePath.slice(1)),
+                newValue
+              )
+            )
+          }}
+          onUnlock={action("onUnlock")}
+          nestedTree={nestedTree}
+          meters={exampleMeters}
+        />
+      </div>
+    )
+  })

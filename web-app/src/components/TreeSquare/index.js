@@ -24,7 +24,7 @@ const Container = styled("div")({
   boxShadow: "0px 3px 3px rgba(0,0,0,0.2)",
   cursor: "pointer",
   transition:
-    "transform 80ms linear, margin-left 80ms linear, margin-right 80ms linear",
+    "transform 80ms linear, margin-left 200ms ease, margin-right 200ms ease",
   "&:hover": {
     transform: "scale(1.05,1.05)"
   },
@@ -124,8 +124,7 @@ export default props => {
     name,
     description,
     rewards = [],
-    onDrawn,
-    unlocked = true,
+    available = true,
     complete = true,
     progress,
     inEditMode
@@ -150,12 +149,12 @@ export default props => {
       <IconContainer>
         <StyledAutoIcon name={name} />
       </IconContainer>
-      {!unlocked && (
+      {!available && (
         <LockContainer>
           <LockIcon className="icon" />
         </LockContainer>
       )}
-      {unlocked && !complete && (
+      {available && !complete && (
         <IncompleteContainer>
           <ProgressContainer
             className={classnames({ unlockable: progress >= 100 })}

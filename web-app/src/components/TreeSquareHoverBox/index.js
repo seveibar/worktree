@@ -130,6 +130,7 @@ export default ({
   open,
   fullyOpen,
   complete,
+  available,
   name,
   description,
   rewards = [],
@@ -226,17 +227,17 @@ export default ({
           </>
         ) : (
           <>
-            {progress < 1 ? (
+            {progress < 100 || !available ? (
               <LockIcon className="icon" />
             ) : (
               <UnlockIcon className="icon" />
             )}
             <div>
-              {progress < 1
+              {progress < 100 || !available
                 ? "Complete Requirements to Unlock"
                 : "Ready to Unlock!"}
             </div>
-            {progress >= 1 && (
+            {progress >= 100 && available && (
               <div className="action">{"(Click and Hold)"}</div>
             )}
           </>
