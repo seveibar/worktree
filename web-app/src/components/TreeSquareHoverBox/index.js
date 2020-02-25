@@ -14,6 +14,7 @@ import SmileIcon from "@material-ui/icons/EmojiEmotions"
 import Box from "@material-ui/core/Box"
 import Button from "@material-ui/core/Button"
 import TrashIcon from "@material-ui/icons/Delete"
+import AddRequirementBox from "../AddRequirementBox"
 
 const WIDTH = 360
 const HEIGHT = 300
@@ -154,7 +155,8 @@ export default ({
   inEditMode,
   state,
   progress,
-  onChangeFlatTree
+  onChangeFlatTree,
+  onDeleteSelf
 }) => {
   const trackingElmRef = useRef()
   const windowSize = useWindowSize()
@@ -249,7 +251,14 @@ export default ({
                 state={state}
               />
             ))}
-            {/* {inEditMode && fullyOpen && <AddRequirementBox />} */}
+            {inEditMode && fullyOpen && (
+              <AddRequirementBox
+                onAdd={() => {
+                  // TODO change tree
+                }}
+                meters={meters}
+              />
+            )}
           </MeterProgressContainer>
         </>
       )}
@@ -300,7 +309,7 @@ export default ({
           // when inEditMode...
           <>
             <Box display="flex" flexGrow={1} />
-            <StyledTrashIcon />
+            <StyledTrashIcon onClick={onDeleteSelf} />
           </>
         )}
       </ActionableText>

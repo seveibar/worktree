@@ -121,6 +121,7 @@ After a user imports a meter, we want to track how that meter has increased over
 {
   "my_name.my_github_meter.project_stars": {
     "name": "Github Project Stars",
+    "endpointName": "Github",
     "meterKey": "my_name.my_github_meter.project_stars",
     "value": 100,
     "outputType": "integer",
