@@ -11,6 +11,9 @@ import TrophyIcon from "@material-ui/icons/EmojiEvents"
 import LockIcon from "@material-ui/icons/Lock"
 import UnlockIcon from "@material-ui/icons/LockOpen"
 import SmileIcon from "@material-ui/icons/EmojiEmotions"
+import Box from "@material-ui/core/Box"
+import Button from "@material-ui/core/Button"
+import TrashIcon from "@material-ui/icons/Delete"
 
 const WIDTH = 360
 const HEIGHT = 300
@@ -126,6 +129,16 @@ const ActionableText = styled("div")({
   }
 })
 
+const StyledTrashIcon = styled(TrashIcon)({
+  color: "#fff",
+  cursor: "pointer",
+  marginRight: 8,
+  transition: "transform 80ms ease",
+  "&:hover": {
+    transform: "scale(1.2,1.2)"
+  }
+})
+
 const defaultDescription = "No Description! How will you know what to do?"
 
 export default ({
@@ -223,7 +236,7 @@ export default ({
       >
         {description || defaultDescription}
       </DescriptionContainer>
-      {Object.keys(requirements).length > 0 && (
+      {(Object.keys(requirements).length > 0 || (inEditMode && fullyOpen)) && (
         <>
           <Sep />
           <RequirementsText>Requirements</RequirementsText>
@@ -236,10 +249,11 @@ export default ({
                 state={state}
               />
             ))}
+            {/* {inEditMode && fullyOpen && <AddRequirementBox />} */}
           </MeterProgressContainer>
         </>
       )}
-      {rewards.length > 0 && (
+      {(rewards.length > 0 || (inEditMode && fullyOpen)) && (
         <>
           {/* <Sep /> */}
           <RequirementsText>Unlocks</RequirementsText>
@@ -252,32 +266,41 @@ export default ({
                 <div className="text">{r}</div>
               </Reward>
             ))}
+            {inEditMode && fullyOpen && "+"}
           </RewardsContainer>
         </>
       )}
       <div style={{ flexGrow: 1 }} />
       <Sep />
       <ActionableText>
-        {complete ? (
-          <>
-            <SmileIcon className="icon" />
-            <div>Unlocked!</div>
-          </>
+        {!inEditMode || !fullyOpen ? (
+          complete ? (
+            <>
+              <SmileIcon className="icon" />
+              <div>Unlocked!</div>
+            </>
+          ) : (
+            <>
+              {progress < 100 || !available ? (
+                <LockIcon className="icon" />
+              ) : (
+                <UnlockIcon className="icon" />
+              )}
+              <div>
+                {progress < 100 || !available
+                  ? "Complete Requirements to Unlock"
+                  : "Ready to Unlock!"}
+              </div>
+              {progress >= 100 && available && (
+                <div className="action">{"(Click and Hold)"}</div>
+              )}
+            </>
+          )
         ) : (
+          // when inEditMode...
           <>
-            {progress < 100 || !available ? (
-              <LockIcon className="icon" />
-            ) : (
-              <UnlockIcon className="icon" />
-            )}
-            <div>
-              {progress < 100 || !available
-                ? "Complete Requirements to Unlock"
-                : "Ready to Unlock!"}
-            </div>
-            {progress >= 100 && available && (
-              <div className="action">{"(Click and Hold)"}</div>
-            )}
+            <Box display="flex" flexGrow={1} />
+            <StyledTrashIcon />
           </>
         )}
       </ActionableText>
