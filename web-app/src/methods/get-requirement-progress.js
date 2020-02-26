@@ -1,4 +1,4 @@
-export default ({ state, meter, requirement }) => {
+export default ({ state = {}, meter, requirement }) => {
   const startValue = (state.startValues || {})[meter.meterKey] || 0
   let absoluteGoal, distanceToGoal, goalSize, progress
   if (

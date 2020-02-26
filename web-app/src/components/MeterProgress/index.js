@@ -68,7 +68,7 @@ const NoMeter = styled("div")({
   marginBottom: 8
 })
 
-export default ({ requirement, meter, state }) => {
+export default ({ requirement, meter, state = {} }) => {
   if (!meter) return <NoMeter>Missing Meter!</NoMeter>
   const startValue = (state.startValues || {})[meter.meterKey] || 0
   const endValue = (state.endValues || {})[meter.meterKey] || meter.value

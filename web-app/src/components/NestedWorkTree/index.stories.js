@@ -89,6 +89,7 @@ const exampleTree = {
 const exampleMeters = {
   "fitness_tracker.total_push_ups": {
     name: "Total Push Ups",
+    endpointName: "Fitness",
     description: "",
     meterKey: "fitness_tracker.total_push_ups",
     outputType: "integer",
@@ -96,6 +97,7 @@ const exampleMeters = {
   },
   "fitness_tracker.total_sit_ups": {
     name: "Total Sit Ups",
+    endpointName: "Fitness",
     description: "",
     meterKey: "fitness_tracker.total_sit_ups",
     outputType: "integer",
@@ -107,6 +109,7 @@ storiesOf("NestedWorkTree", module)
   .add("Normal Mode", () => (
     <NestedWorkTree
       onUnlock={action("onUnlock")}
+      onChangeMeter={action("onChangeMeter")}
       nestedTree={exampleTree}
       meters={exampleMeters}
     />
@@ -116,6 +119,7 @@ storiesOf("NestedWorkTree", module)
       inEditMode
       onChangeFlatTree={action("onChangeFlatTree")}
       onUnlock={action("onUnlock")}
+      onChangeMeter={action("onChangeMeter")}
       nestedTree={exampleTree}
       meters={exampleMeters}
     />
@@ -123,6 +127,7 @@ storiesOf("NestedWorkTree", module)
   .add("Controlled Edit Mode", () => {
     const [inEditMode, changeInEditMode] = useState()
     const [nestedTree, changeNestedTree] = useState(exampleTree)
+    const [meters, changeMeters] = useState(exampleMeters)
     return (
       <div onClick={() => changeInEditMode(true)}>
         <NestedWorkTree
@@ -148,9 +153,18 @@ storiesOf("NestedWorkTree", module)
               )
             )
           }}
+          onChangeMeter={meter => {
+            changeMeters({
+              ...meters,
+              [meter.meterKey]: {
+                ...(meters[meter.meterKey] || {}),
+                ...meter
+              }
+            })
+          }}
           onUnlock={action("onUnlock")}
           nestedTree={nestedTree}
-          meters={exampleMeters}
+          meters={meters}
         />
       </div>
     )

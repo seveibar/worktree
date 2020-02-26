@@ -156,7 +156,8 @@ export default ({
   state,
   progress,
   onChangeFlatTree,
-  onDeleteSelf
+  onDeleteSelf,
+  onChangeMeter
 }) => {
   const trackingElmRef = useRef()
   const windowSize = useWindowSize()
@@ -253,9 +254,13 @@ export default ({
             ))}
             {inEditMode && fullyOpen && (
               <AddRequirementBox
-                onAdd={() => {
-                  // TODO change tree
+                onAdd={(meterKey, requirement) => {
+                  onChangeFlatTree([name, "requirements"], {
+                    ...requirements,
+                    [meterKey]: requirement
+                  })
                 }}
+                onChangeMeter={onChangeMeter}
                 meters={meters}
               />
             )}

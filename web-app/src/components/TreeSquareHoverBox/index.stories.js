@@ -30,7 +30,11 @@ storiesOf("TreeSquareHoverBox", module).add("Basic", () => (
         name="Beginner Marketing"
         description="Get started by investigating keywords. Find the ten keywords you want to target."
         rewards={[]}
-        requirements={[]}
+        requirements={{
+          "fitness_tracker.total_push_ups": {
+            mustIncreaseBy: 100
+          }
+        }}
         meters={{
           "fitness_tracker.total_push_ups": {
             name: "Total Push Ups",
@@ -42,6 +46,14 @@ storiesOf("TreeSquareHoverBox", module).add("Basic", () => (
           },
           "fitness_tracker.total_sit_ups": {
             name: "Total Sit Ups",
+            endpointName: "Fitness Tracker",
+            description: "",
+            meterKey: "fitness_tracker.total_sit_ups",
+            outputType: "integer",
+            value: 2
+          },
+          "fitness_tracker.total_crunches": {
+            name: "Total Crunches",
             endpointName: "Fitness Tracker",
             description: "",
             meterKey: "fitness_tracker.total_sit_ups",
