@@ -33,6 +33,9 @@ storiesOf("TreeSquareHoverBox", module).add("Basic", () => (
         requirements={{
           "fitness_tracker.total_push_ups": {
             mustIncreaseBy: 100
+          },
+          "fitness_tracker.total_sit_ups": {
+            mustBeAtleast: 50
           }
         }}
         meters={{

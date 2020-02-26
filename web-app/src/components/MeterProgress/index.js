@@ -1,8 +1,30 @@
 import React from "react"
-import { styled } from "@material-ui/core/styles"
+import { styled, makeStyles } from "@material-ui/core/styles"
 import AutoIcon from "../AutoIcon"
-import Checkbox from "@material-ui/core/Checkbox"
+import TrashIcon from "@material-ui/icons/Delete"
+import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward"
+import CheckBoxIcon from "@material-ui/icons/CheckBox"
+import Checkbox from "@material-ui/icons/CheckBox"
 import * as colors from "@material-ui/core/colors"
+import Button from "@material-ui/core/Button"
+import Input from "@material-ui/core/Input"
+
+const useStyles = makeStyles({
+  iconButton: {
+    cursor: "pointer",
+    transition: "transform 80ms",
+    "&:hover": {
+      transform: "scale(1.2, 1.2)"
+    },
+    fontSize: 24,
+    fontWeight: 600,
+    display: "inline-flex",
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 24
+  }
+})
 
 const Container = styled("div")({
   color: "#fff",
@@ -31,6 +53,11 @@ const TopContent = styled("div")({
   display: "flex",
   alignItems: "center",
   paddingBottom: 8
+})
+const EditContent = styled("div")({
+  display: "flex",
+  alignItems: "center",
+  fontSize: 14
 })
 const MetricName = styled("div")({})
 const ProgressText = styled("div")({
@@ -68,8 +95,77 @@ const NoMeter = styled("div")({
   marginBottom: 8
 })
 
-export default ({ requirement, meter, state = {} }) => {
+const EditInput = styled(Input)({
+  color: "#fff",
+  width: 64,
+  "& .MuiInput-input, & .MuiInput-underline": {
+    color: "#fff",
+    borderBottom: "2px solid white",
+    "&:after": {
+      borderBottom: "2px solid white"
+    }
+  }
+})
+
+const EditRequirement = ({
+  meter,
+  requirement,
+  onChangeRequirement,
+  onDeleteRequirement
+}) => {
+  const c = useStyles()
+  return (
+    <Container>
+      <IconContainer>
+        <AutoIcon className="icon" name={meter.name} />
+      </IconContainer>
+      <RightOfIconContainer>
+        <EditContent>
+          <MetricName>{meter.name}</MetricName>
+          <div style={{ flexGrow: 1 }} />
+          {meter.outputType === "boolean" ? (
+            <CheckBoxIcon className={c.iconButton} />
+          ) : (
+            <>
+              {requirement.mustIncreaseBy !== undefined ? (
+                <ArrowUpwardIcon className={c.iconButton} />
+              ) : requirement.mustBeAtleast ? (
+                <div className={c.iconButton}>{">"}</div>
+              ) : requirement.mustBe ? (
+                <div className={c.iconButton}>{"="}</div>
+              ) : (
+                "?"
+              )}
+              <EditInput />
+            </>
+          )}
+          <TrashIcon className={c.iconButton} />
+        </EditContent>
+      </RightOfIconContainer>
+    </Container>
+  )
+}
+
+export default ({
+  requirement,
+  meter,
+  state = {},
+  inEditMode,
+  onChangeRequirement,
+  onDeleteRequirement
+}) => {
   if (!meter) return <NoMeter>Missing Meter!</NoMeter>
+
+  if (inEditMode)
+    return (
+      <EditRequirement
+        onChangeRequirement={onChangeRequirement}
+        onDeleteRequirement={onDeleteRequirement}
+        meter={meter}
+        requirement={requirement}
+      />
+    )
+
   const startValue = (state.startValues || {})[meter.meterKey] || 0
   const endValue = (state.endValues || {})[meter.meterKey] || meter.value
   let absoluteGoal, distanceToGoal, goalSize, progress
@@ -101,9 +197,9 @@ export default ({ requirement, meter, state = {} }) => {
               ? `${Math.min(distanceToGoal, goalSize)} of ${goalSize}`
               : `${Math.min(endValue, absoluteGoal)}/${absoluteGoal}`}
           </ProgressText>
-          <div style={{ width: 32, height: 18 }}>
+          <div style={{ width: 24, height: 18, paddingLeft: 8 }}>
             <Checkbox
-              style={{ color: "#fff", marginTop: -8, width: 18, height: 18 }}
+              style={{ color: "#fff", marginTop: 0, width: 18, height: 18 }}
               checked={progress >= 100}
             />
           </div>

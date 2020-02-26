@@ -246,9 +246,16 @@ export default ({
           <MeterProgressContainer>
             {Object.entries(requirements).map(([meterKey, requirement]) => (
               <MeterProgress
+                inEditMode={inEditMode}
                 key={meterKey}
                 meter={meters[meterKey]}
                 requirement={requirement}
+                onChangeRequirement={newRequirement => {
+                  onChangeFlatTree(
+                    [name, "requirements", meterKey],
+                    newRequirement
+                  )
+                }}
                 state={state}
               />
             ))}

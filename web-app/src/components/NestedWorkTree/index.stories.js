@@ -63,7 +63,7 @@ const exampleTree = {
           mustIncreaseBy: 200
         },
         "fitness_tracker.total_sit_ups": {
-          mustIncreaseBy: 50
+          mustBeAtleast: 50
         }
       },
       state: {
