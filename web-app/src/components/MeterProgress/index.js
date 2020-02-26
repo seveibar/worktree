@@ -1,13 +1,13 @@
 import React from "react"
 import { styled, makeStyles } from "@material-ui/core/styles"
-import AutoIcon from "../AutoIcon"
+import AutoIcon, { getAutoColor } from "../AutoIcon"
 import TrashIcon from "@material-ui/icons/Delete"
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward"
 import CheckBoxIcon from "@material-ui/icons/CheckBox"
 import Checkbox from "@material-ui/icons/CheckBox"
 import * as colors from "@material-ui/core/colors"
 import Button from "@material-ui/core/Button"
-import Input from "@material-ui/core/Input"
+import EditNumber from "../EditNumber"
 
 const useStyles = makeStyles({
   iconButton: {
@@ -31,11 +31,11 @@ const Container = styled("div")({
   display: "flex",
   alignItems: "center"
 })
-const IconContainer = styled("div")({
+const IconContainer = styled("div")(({ color = colors.purple }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  backgroundColor: colors.purple[600],
+  backgroundColor: color[600],
   padding: 4,
   margin: 4,
   marginLeft: 0,
@@ -45,7 +45,7 @@ const IconContainer = styled("div")({
     height: 24
   },
   border: "2px solid rgba(0,0,0,0.3)"
-})
+}))
 const RightOfIconContainer = styled("div")({
   flexGrow: 1
 })
@@ -95,18 +95,6 @@ const NoMeter = styled("div")({
   marginBottom: 8
 })
 
-const EditInput = styled(Input)({
-  color: "#fff",
-  width: 64,
-  "& .MuiInput-input, & .MuiInput-underline": {
-    color: "#fff",
-    borderBottom: "2px solid white",
-    "&:after": {
-      borderBottom: "2px solid white"
-    }
-  }
-})
-
 const EditRequirement = ({
   meter,
   requirement,
@@ -116,7 +104,7 @@ const EditRequirement = ({
   const c = useStyles()
   return (
     <Container>
-      <IconContainer>
+      <IconContainer color={getAutoColor(meter.name)}>
         <AutoIcon className="icon" name={meter.name} />
       </IconContainer>
       <RightOfIconContainer>
@@ -128,18 +116,59 @@ const EditRequirement = ({
           ) : (
             <>
               {requirement.mustIncreaseBy !== undefined ? (
-                <ArrowUpwardIcon className={c.iconButton} />
+                <ArrowUpwardIcon
+                  className={c.iconButton}
+                  onClick={() => {
+                    const { mustIncreaseBy, ...res } = requirement
+                    onChangeRequirement({
+                      ...res,
+                      mustBeAtleast: mustIncreaseBy
+                    })
+                  }}
+                />
               ) : requirement.mustBeAtleast ? (
-                <div className={c.iconButton}>{">"}</div>
+                <div
+                  className={c.iconButton}
+                  onClick={() => {
+                    const { mustBeAtleast, ...res } = requirement
+                    onChangeRequirement({
+                      ...res,
+                      mustIncreaseBy: mustBeAtleast
+                    })
+                  }}
+                >
+                  {">"}
+                </div>
               ) : requirement.mustBe ? (
                 <div className={c.iconButton}>{"="}</div>
               ) : (
                 "?"
               )}
-              <EditInput />
+              <EditNumber
+                style={{
+                  minWidth: 50,
+                  textAlign: "center",
+                  paddingLeft: 8,
+                  paddingRight: 8
+                }}
+                onChange={value => {
+                  const key = Object.keys(requirement)
+                    .filter(k => requirement[k] !== undefined)
+                    .filter(k =>
+                      ["mustBeAtleast", "mustBe", "mustIncreaseBy"].includes(k)
+                    )[0]
+                  onChangeRequirement({ ...requirement, [key]: value })
+                }}
+                value={
+                  requirement.mustBeAtleast ||
+                  requirement.mustBe ||
+                  requirement.mustIncreaseBy ||
+                  0
+                }
+              />
             </>
           )}
-          <TrashIcon className={c.iconButton} />
+          <TrashIcon onClick={onDeleteRequirement} className={c.iconButton} />
         </EditContent>
       </RightOfIconContainer>
     </Container>
@@ -184,7 +213,7 @@ export default ({
   }
   return (
     <Container>
-      <IconContainer>
+      <IconContainer color={getAutoColor(meter.name)}>
         <AutoIcon className="icon" name={meter.name} />
       </IconContainer>
       <RightOfIconContainer>

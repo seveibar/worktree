@@ -256,6 +256,11 @@ export default ({
                     newRequirement
                   )
                 }}
+                onDeleteRequirement={() => {
+                  const newRequirements = { ...requirements }
+                  delete newRequirements[meterKey]
+                  onChangeFlatTree([name, "requirements"], newRequirements)
+                }}
                 state={state}
               />
             ))}
@@ -274,7 +279,8 @@ export default ({
           </MeterProgressContainer>
         </>
       )}
-      {(rewards.length > 0 || (inEditMode && fullyOpen)) && (
+      {/* Disabling Rewards for Now */}
+      {false && (rewards.length > 0 || (inEditMode && fullyOpen)) && (
         <>
           {/* <Sep /> */}
           <RequirementsText>Unlocks</RequirementsText>
