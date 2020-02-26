@@ -2,8 +2,9 @@ import React, { useState, useRef, useCallback, useEffect } from "react"
 import { useClickAway, useKey } from "react-use"
 import { styled } from "@material-ui/core/styles"
 
-const Container = styled("div")({})
+const Container = styled("div")({ display: "inline" })
 const NumberContainer = styled("div")({
+  display: "inline",
   padding: "0.25em",
   textDecoration: "underline",
   transition: "transform 120ms",

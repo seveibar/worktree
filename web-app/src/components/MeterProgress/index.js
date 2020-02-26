@@ -4,7 +4,7 @@ import AutoIcon, { getAutoColor } from "../AutoIcon"
 import TrashIcon from "@material-ui/icons/Delete"
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward"
 import CheckBoxIcon from "@material-ui/icons/CheckBox"
-import Checkbox from "@material-ui/icons/CheckBox"
+import CheckBoxOutlineIcon from "@material-ui/icons/CheckBoxOutlineBlank"
 import * as colors from "@material-ui/core/colors"
 import Button from "@material-ui/core/Button"
 import EditNumber from "../EditNumber"
@@ -25,6 +25,9 @@ const useStyles = makeStyles({
     width: 24
   }
 })
+
+const CheckBox = ({ checked, ...props }) =>
+  checked ? <CheckBoxIcon {...props} /> : <CheckBoxOutlineIcon {...props} />
 
 const Container = styled("div")({
   color: "#fff",
@@ -181,6 +184,7 @@ export default ({
   state = {},
   inEditMode,
   onChangeRequirement,
+  onChangeMeter,
   onDeleteRequirement
 }) => {
   if (!meter) return <NoMeter>Missing Meter!</NoMeter>
@@ -223,15 +227,13 @@ export default ({
             {meter.outputType === "boolean"
               ? ""
               : requirement.mustIncreaseBy
-              ? `${Math.min(distanceToGoal, goalSize)} of ${goalSize}`
+              ? `${Math.min(distanceToGoal, goalSize)}/${goalSize}`
               : `${Math.min(endValue, absoluteGoal)}/${absoluteGoal}`}
           </ProgressText>
-          <div style={{ width: 24, height: 18, paddingLeft: 8 }}>
-            <Checkbox
-              style={{ color: "#fff", marginTop: 0, width: 18, height: 18 }}
-              checked={progress >= 100}
-            />
-          </div>
+          <CheckBox
+            style={{ color: "#fff", marginLeft: 4, width: 18, height: 18 }}
+            checked={progress >= 100}
+          />
         </TopContent>
         <ProgressBar>
           <div

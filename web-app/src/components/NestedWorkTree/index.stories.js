@@ -129,7 +129,7 @@ storiesOf("NestedWorkTree", module)
     const [nestedTree, changeNestedTree] = useState(exampleTree)
     const [meters, changeMeters] = useState(exampleMeters)
     return (
-      <div onClick={() => changeInEditMode(true)}>
+      <div>
         <NestedWorkTree
           inEditMode={inEditMode}
           onChangeFlatTree={(flatTreePath, newValue) => {
@@ -166,6 +166,21 @@ storiesOf("NestedWorkTree", module)
           nestedTree={nestedTree}
           meters={meters}
         />
+        <div
+          style={{
+            position: "absolute",
+            right: 10,
+            top: 10,
+            textAlign: "center",
+            padding: 16,
+            cursor: "pointer",
+            color: "#fff",
+            backgroundColor: "#000"
+          }}
+          onClick={() => changeInEditMode(!inEditMode)}
+        >
+          Toggle Edit Mode
+        </div>
       </div>
     )
   })

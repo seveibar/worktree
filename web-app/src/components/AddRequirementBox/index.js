@@ -254,7 +254,7 @@ export default ({ baseColor = colors.blue, meters, onAdd, onChangeMeter }) => {
             ))}
             <NewMeterInput
               baseColor={baseColor}
-              placeholder="New"
+              placeholder="New Category"
               value={newCategoryName}
               onChange={e => changeNewCategoryName(e.target.value)}
             />
@@ -299,7 +299,7 @@ export default ({ baseColor = colors.blue, meters, onAdd, onChangeMeter }) => {
             )}
             <NewMeterInput
               baseColor={baseColor}
-              placeholder="New"
+              placeholder="New Meter"
               value={newMeterName}
               onChange={e => changeNewMeterName(e.target.value)}
             />

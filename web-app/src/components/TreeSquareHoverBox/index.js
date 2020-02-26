@@ -83,13 +83,13 @@ const RequirementsText = styled("div")({
 })
 const MeterProgressContainer = styled("div")({
   padding: 8,
-  paddingLeft: 32,
-  paddingRight: 32
+  paddingLeft: 16,
+  paddingRight: 16
 })
 const RewardsContainer = styled("div")({
-  padding: 8,
-  paddingLeft: 32,
-  paddingRight: 32
+  padding: 8
+  // paddingLeft: 32,
+  // paddingRight: 32
 })
 const Reward = styled("div")({
   display: "flex",
@@ -261,6 +261,7 @@ export default ({
                   delete newRequirements[meterKey]
                   onChangeFlatTree([name, "requirements"], newRequirements)
                 }}
+                onChangeMeter={onChangeMeter}
                 state={state}
               />
             ))}
