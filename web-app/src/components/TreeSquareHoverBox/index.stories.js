@@ -10,7 +10,8 @@ import TreeSquareHoverBox from "./"
 storiesOf("TreeSquareHoverBox", module).add("Basic", () => (
   <div
     style={{
-      display: "flex"
+      display: "flex",
+      justifyContent: "space-between"
     }}
   >
     <div
@@ -18,7 +19,8 @@ storiesOf("TreeSquareHoverBox", module).add("Basic", () => (
         display: "inline-flex",
         width: 10,
         height: 10,
-        backgroundColor: "#000"
+        backgroundColor: "#000",
+        position: "relative"
       }}
     >
       <TreeSquareHoverBox
@@ -75,7 +77,56 @@ storiesOf("TreeSquareHoverBox", module).add("Basic", () => (
         state={{}}
         progress={50}
         onChangeFlatTree={action("onChangeFlatTree")}
-        onDeleteSelf={action("onDeleteSelf")}
+        onDeleteTree={action("onDeleteTree")}
+      />
+    </div>
+    <div
+      style={{
+        display: "inline-flex",
+        width: 10,
+        height: 10,
+        backgroundColor: "#000",
+        position: "relative"
+      }}
+    >
+      <TreeSquareHoverBox
+        open
+        fullyOpen
+        complete
+        available
+        name="Beginner Marketing"
+        description="Get started by investigating keywords. Find the ten keywords you want to target."
+        rewards={[]}
+        requirements={{
+          "fitness_tracker.total_push_ups": {
+            mustIncreaseBy: 100
+          },
+          "fitness_tracker.total_sit_ups": {
+            mustBeAtleast: 50
+          }
+        }}
+        meters={{
+          "fitness_tracker.total_push_ups": {
+            name: "Total Push Ups",
+            endpointName: "Fitness Tracker",
+            description: "",
+            meterKey: "fitness_tracker.total_push_ups",
+            outputType: "integer",
+            value: 130
+          },
+          "fitness_tracker.total_sit_ups": {
+            name: "Total Sit Ups",
+            endpointName: "Fitness Tracker",
+            description: "",
+            meterKey: "fitness_tracker.total_sit_ups",
+            outputType: "integer",
+            value: 2
+          }
+        }}
+        state={{}}
+        progress={50}
+        onChangeFlatTree={action("onChangeFlatTree")}
+        onDeleteTree={action("onDeleteTree")}
       />
     </div>
   </div>

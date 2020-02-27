@@ -16,6 +16,7 @@ const useStyles = makeStyles({
     "&:hover": {
       transform: "scale(1.2, 1.2)"
     },
+    marginLeft: 8,
     fontSize: 24,
     fontWeight: 600,
     display: "inline-flex",
@@ -32,30 +33,35 @@ const CheckBox = ({ checked, ...props }) =>
 const Container = styled("div")({
   color: "#fff",
   display: "flex",
-  alignItems: "center"
-})
-const IconContainer = styled("div")(({ color = colors.purple }) => ({
-  display: "flex",
   alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: color[600],
-  padding: 4,
-  margin: 4,
-  marginLeft: 0,
-  marginRight: 8,
-  "& .icon": {
-    width: 24,
-    height: 24
-  },
-  border: "2px solid rgba(0,0,0,0.3)"
-}))
+  marginTop: 4,
+  marginBottom: 4
+})
+const IconContainer = styled("div")(
+  ({ color = colors.purple, editableValue }) => ({
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: color[600],
+    padding: 4,
+    margin: 4,
+    marginLeft: 0,
+    marginTop: editableValue ? 12 : 4,
+    marginRight: 8,
+    "& .icon": {
+      width: 24,
+      height: 24
+    },
+    border: "2px solid rgba(0,0,0,0.3)"
+  })
+)
 const RightOfIconContainer = styled("div")({
   flexGrow: 1
 })
 const TopContent = styled("div")({
   display: "flex",
   alignItems: "center",
-  paddingBottom: 8
+  marginBottom: 4
 })
 const EditContent = styled("div")({
   display: "flex",
@@ -72,6 +78,7 @@ const ProgressBar = styled("div")({
   height: 4,
   "& .topbar": {
     position: "absolute",
+    transition: "width 120ms ease",
     top: 0,
     left: 0,
     backgroundColor: "#fff",
@@ -149,10 +156,8 @@ const EditRequirement = ({
               )}
               <EditNumber
                 style={{
-                  minWidth: 50,
-                  textAlign: "center",
-                  paddingLeft: 8,
-                  paddingRight: 8
+                  minWidth: 60,
+                  textAlign: "center"
                 }}
                 onChange={value => {
                   const key = Object.keys(requirement)
@@ -183,6 +188,7 @@ export default ({
   meter,
   state = {},
   inEditMode,
+  editableValue,
   onChangeRequirement,
   onChangeMeter,
   onDeleteRequirement
@@ -215,21 +221,44 @@ export default ({
   } else if (meter.outputType === "boolean") {
     progress = requirement.mustBe === endValue ? 100 : 0
   }
+  const progressText =
+    meter.outputType === "boolean"
+      ? ""
+      : requirement.mustIncreaseBy
+      ? `${Math.min(distanceToGoal, goalSize)}/${goalSize}`
+      : `${Math.min(endValue, absoluteGoal)}/${absoluteGoal}`
+
   return (
     <Container>
-      <IconContainer color={getAutoColor(meter.name)}>
+      <IconContainer
+        color={getAutoColor(meter.name)}
+        editableValue={editableValue}
+      >
         <AutoIcon className="icon" name={meter.name} />
       </IconContainer>
       <RightOfIconContainer>
         <TopContent>
           <MetricName>{meter.name}</MetricName>
-          <ProgressText>
-            {meter.outputType === "boolean"
-              ? ""
-              : requirement.mustIncreaseBy
-              ? `${Math.min(distanceToGoal, goalSize)}/${goalSize}`
-              : `${Math.min(endValue, absoluteGoal)}/${absoluteGoal}`}
-          </ProgressText>
+          {editableValue ? (
+            <>
+              <div style={{ flexGrow: 1 }} />
+              <EditNumber
+                style={{
+                  minWidth: 60,
+                  textAlign: "center",
+                  marginLeft: 8
+                }}
+                adderDistance={34}
+                onChange={value => {
+                  onChangeMeter({ ...meter, value })
+                }}
+                value={meter.value}
+                notEditingText={progressText}
+              />
+            </>
+          ) : (
+            <ProgressText>{progressText}</ProgressText>
+          )}
           <CheckBox
             style={{ color: "#fff", marginLeft: 4, width: 18, height: 18 }}
             checked={progress >= 100}

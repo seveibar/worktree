@@ -15,6 +15,7 @@ import Box from "@material-ui/core/Box"
 import Button from "@material-ui/core/Button"
 import TrashIcon from "@material-ui/icons/Delete"
 import AddRequirementBox from "../AddRequirementBox"
+import classnames from "classnames"
 
 const WIDTH = 360
 const HEIGHT = 300
@@ -37,6 +38,12 @@ const Container = styled("div")({
   boxShadow: "0px 3px 5px rgba(0,0,0,0.3)"
 })
 
+const editStripes = {
+  backgroundImage:
+    "linear-gradient(45deg, rgba(0, 0, 0, 0.1) 16.67%, rgba(0, 0, 0, 0) 16.67%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1) 66.67%, rgba(0, 0, 0, 0) 66.67%, rgba(0, 0, 0, 0) 100%)",
+  backgroundSize: "16.97px 16.97px"
+}
+
 const Title = styled("div")({
   color: "#fff",
   display: "flex",
@@ -56,7 +63,8 @@ const Title = styled("div")({
     fontWeight: 700,
     textShadow: "0px 2px 3px rgba(0,0,0,0.1)",
     flexGrow: 1,
-    padding: 12
+    padding: 12,
+    "&.editable": editStripes
   }
 })
 
@@ -65,7 +73,8 @@ const DescriptionContainer = styled("div")({
   padding: 16,
   // paddingTop: 8,
   // paddingBottom: 0,
-  minHeight: 100
+  minHeight: 100,
+  "&.editable": editStripes
 })
 const Sep = styled("div")({
   display: "inline-flex",
@@ -133,7 +142,8 @@ const ActionableText = styled("div")({
 const StyledTrashIcon = styled(TrashIcon)({
   color: "#fff",
   cursor: "pointer",
-  marginRight: 8,
+  // marginRight: 8,
+  marginLeft: 8,
   transition: "transform 80ms ease",
   "&:hover": {
     transform: "scale(1.2,1.2)"
@@ -156,7 +166,7 @@ export default ({
   state,
   progress,
   onChangeFlatTree,
-  onDeleteSelf,
+  onDeleteTree,
   onChangeMeter
 }) => {
   const trackingElmRef = useRef()
@@ -196,6 +206,12 @@ export default ({
       tx -= 145 + WIDTH
     }
     // TODO possibly add in window.pageX and window.pageY
+    console.log({
+      tx,
+      ty,
+      left: Math.min(Math.max(15, tx), windowSize.width - WIDTH - 40),
+      top: Math.max(ty - HEIGHT + 50, 10)
+    })
     changePosition({
       left: Math.min(Math.max(15, tx), windowSize.width - WIDTH - 40),
       top: Math.max(ty - HEIGHT + 50, 10)
@@ -227,7 +243,7 @@ export default ({
           contentEditable={inEditMode && fullyOpen}
           ref={titleElm}
           style={{ backgroundColor: color[500] }}
-          className="text"
+          className={classnames("text", inEditMode && fullyOpen && "editable")}
         >
           {name}
         </div>
@@ -236,6 +252,7 @@ export default ({
         ref={descriptionElm}
         contentEditable={inEditMode && fullyOpen}
         suppressContentEditableWarning={true}
+        className={classnames({ editable: fullyOpen && inEditMode })}
       >
         {description || defaultDescription}
       </DescriptionContainer>
@@ -247,6 +264,7 @@ export default ({
             {Object.entries(requirements).map(([meterKey, requirement]) => (
               <MeterProgress
                 inEditMode={inEditMode}
+                editableValue={fullyOpen}
                 key={meterKey}
                 meter={meters[meterKey]}
                 requirement={requirement}
@@ -328,7 +346,7 @@ export default ({
           // when inEditMode...
           <>
             <Box display="flex" flexGrow={1} />
-            <StyledTrashIcon onClick={onDeleteSelf} />
+            <StyledTrashIcon onClick={() => onDeleteTree(name)} />
           </>
         )}
       </ActionableText>

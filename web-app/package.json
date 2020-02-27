@@ -17,7 +17,8 @@
     "react-icons": "^3.9.0",
     "react-markdown": "^4.3.1",
     "react-scripts": "3.4.0",
-    "react-use": "^13.26.2"
+    "react-use": "^13.26.2",
+    "seamless-immutable": "^7.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
