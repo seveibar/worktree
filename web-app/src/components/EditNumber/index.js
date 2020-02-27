@@ -11,7 +11,6 @@ const Container = styled("div")({
   position: "relative"
 })
 const Adders = styled("div")(({ open, adderDistance = 12 }) => ({
-  // border: "1px solid rgba(255,255,255,0.25)",
   pointerEvents: open ? "auto" : "none",
   position: "absolute",
   transition: "opacity 80ms",
@@ -20,7 +19,7 @@ const Adders = styled("div")(({ open, adderDistance = 12 }) => ({
   margin: 0,
   top: -50,
   "& .icon": { color: "#fff" },
-  backgroundColor: "#fff",
+  backgroundColor: "#000",
   transform: "scale(0.9,0.95) translate(4px, 0px)",
   transition: "opacity 120ms, box-shadow 120ms, transform 120ms",
   "&:hover": {
@@ -28,13 +27,21 @@ const Adders = styled("div")(({ open, adderDistance = 12 }) => ({
     transform: "scale(1,1)",
     boxShadow: "0px 3px 5px rgba(0,0,0,0.2)"
   },
-  border: `4px solid #fff`
+  border: `4px solid #000`
 }))
+const AddersExtraHoverRegion = styled("div")(
+  ({ open, adderDistance = 12 }) => ({
+    pointerEvents: open ? "auto" : "none",
+    position: "absolute",
+    left: "100%",
+    top: -50,
+    width: adderDistance + 4,
+    bottom: -50
+  })
+)
 const Adder = styled(Button)({
   fontWeight: "bold",
-  // backgroundColor: colors.blue[700],
-  color: colors.blue[800],
-  // color: "#fff",
+  color: "#fff",
   margin: 4
 })
 const NumberContainer = styled("div")(({ justAdded }) => ({
@@ -48,7 +55,6 @@ const NumberContainer = styled("div")(({ justAdded }) => ({
   paddingBottom: "0.5em",
   textAlign: "center",
   border: "4px dashed rgba(255,255,255,0.25)",
-  // textDecoration: "underline",
   transform: justAdded ? "scale(1.2,1.2)" : "none",
   transition: "transform 120ms",
   "&:hover": {
@@ -114,6 +120,7 @@ export default ({
       }}
       ref={containerRef}
     >
+      <AddersExtraHoverRegion open={open} adderDistance={adderDistance} />
       <Adders
         open={open}
         adderDistance={adderDistance}

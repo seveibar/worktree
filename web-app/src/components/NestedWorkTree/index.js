@@ -41,6 +41,7 @@ const NestedWorkTree = ({
   isRoot = true,
   inEditMode = false,
   onChangeFlatTree,
+  onDeleteTree,
   onChangeMeter,
   onAddChild
 }) => {
@@ -169,6 +170,7 @@ const NestedWorkTree = ({
         inEditMode={inEditMode}
         onChangeMeter={onChangeMeter}
         onChangeFlatTree={onChangeFlatTree}
+        onDeleteTree={onDeleteTree}
         meters={meters}
         progress={getTreeProgress(nestedTree, meters)}
         complete={complete}
@@ -186,6 +188,7 @@ const NestedWorkTree = ({
                 available={complete}
                 inEditMode={inEditMode}
                 onChangeFlatTree={onChangeFlatTree}
+                onDeleteTree={onDeleteTree}
                 onChangeMeter={onChangeMeter}
                 onDrawn={coords =>
                   changeChildCoordinates({ childIndex, coords })

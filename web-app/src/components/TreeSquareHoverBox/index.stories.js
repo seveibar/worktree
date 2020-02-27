@@ -38,6 +38,9 @@ storiesOf("TreeSquareHoverBox", module).add("Basic", () => (
           },
           "fitness_tracker.total_sit_ups": {
             mustBeAtleast: 50
+          },
+          "fitness_tracker.got_gym_membership": {
+            mustBe: true
           }
         }}
         meters={{
@@ -56,6 +59,14 @@ storiesOf("TreeSquareHoverBox", module).add("Basic", () => (
             meterKey: "fitness_tracker.total_sit_ups",
             outputType: "integer",
             value: 2
+          },
+          "fitness_tracker.got_gym_membership": {
+            name: "Got Gym Membership",
+            endpointName: "Fitness Tracker",
+            description: "",
+            meterKey: "fitness_tracker.got_gym_membership",
+            outputType: "boolean",
+            value: false
           },
           "fitness_tracker.total_crunches": {
             name: "Total Crunches",
@@ -103,6 +114,9 @@ storiesOf("TreeSquareHoverBox", module).add("Basic", () => (
           },
           "fitness_tracker.total_sit_ups": {
             mustBeAtleast: 50
+          },
+          "fitness_tracker.got_gym_membership": {
+            mustBe: true
           }
         }}
         meters={{
@@ -121,6 +135,14 @@ storiesOf("TreeSquareHoverBox", module).add("Basic", () => (
             meterKey: "fitness_tracker.total_sit_ups",
             outputType: "integer",
             value: 2
+          },
+          "fitness_tracker.got_gym_membership": {
+            name: "Got Gym Membership",
+            endpointName: "Fitness Tracker",
+            description: "",
+            meterKey: "fitness_tracker.got_gym_membership",
+            outputType: "boolean",
+            value: false
           }
         }}
         state={{}}

@@ -162,6 +162,23 @@ storiesOf("NestedWorkTree", module)
               }
             })
           }}
+          onDeleteTree={treeName => {
+            const nestedSubTreePath = getNestedTreePath(nestedTree, treeName)
+            const { parent: parentName } = getIn(nestedTree, nestedSubTreePath)
+            const nestedSubTreeParentPath = getNestedTreePath(
+              nestedTree,
+              parentName
+            )
+            const parent = getIn(nestedTree, nestedSubTreeParentPath)
+
+            changeNestedTree(
+              setIn(
+                cloneDeep(nestedTree),
+                [...nestedSubTreeParentPath, "children"],
+                parent.children.filter(c => c.name !== treeName)
+              )
+            )
+          }}
           onUnlock={action("onUnlock")}
           nestedTree={nestedTree}
           meters={meters}

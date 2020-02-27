@@ -73,7 +73,7 @@ const DescriptionContainer = styled("div")({
   padding: 16,
   // paddingTop: 8,
   // paddingBottom: 0,
-  minHeight: 100,
+  minHeight: 50,
   "&.editable": editStripes
 })
 const Sep = styled("div")({
@@ -123,9 +123,10 @@ const Reward = styled("div")({
 })
 const ActionableText = styled("div")({
   display: "flex",
-  padding: 16,
+  padding: 8,
   fontSize: 16,
   color: "#fff",
+  "&& .MuiButton-label": { color: "#fff" },
   fontWeight: 600,
   alignItems: "center",
   "& > *": { display: "inline" },
@@ -139,6 +140,17 @@ const ActionableText = styled("div")({
   }
 })
 
+const ActionableButton = styled(Button)({
+  justifyContent: "flex-start",
+  display: "flex",
+  marginLeft: 8,
+  flexDirection: "row",
+  color: "#fff",
+  textTransform: "none",
+  fontSize: 16,
+  fontWeight: 600
+})
+
 const StyledTrashIcon = styled(TrashIcon)({
   color: "#fff",
   cursor: "pointer",
@@ -150,7 +162,7 @@ const StyledTrashIcon = styled(TrashIcon)({
   }
 })
 
-const defaultDescription = "No Description! How will you know what to do?"
+const defaultDescription = "No Description."
 
 export default ({
   open,
@@ -206,14 +218,8 @@ export default ({
       tx -= 145 + WIDTH
     }
     // TODO possibly add in window.pageX and window.pageY
-    console.log({
-      tx,
-      ty,
-      left: Math.min(Math.max(15, tx), windowSize.width - WIDTH - 40),
-      top: Math.max(ty - HEIGHT + 50, 10)
-    })
     changePosition({
-      left: Math.min(Math.max(15, tx), windowSize.width - WIDTH - 40),
+      left: Math.min(Math.max(15, tx), windowSize.width - WIDTH - 80),
       top: Math.max(ty - HEIGHT + 50, 10)
     })
   }, [windowSize.width, windowSize.height, trackingElmRef.current, open])
@@ -326,7 +332,7 @@ export default ({
               <div>Unlocked!</div>
             </>
           ) : (
-            <>
+            <ActionableButton disabled={progress < 100 || !available}>
               {progress < 100 || !available ? (
                 <LockIcon className="icon" />
               ) : (
@@ -338,9 +344,9 @@ export default ({
                   : "Ready to Unlock!"}
               </div>
               {progress >= 100 && available && (
-                <div className="action">{"(Click and Hold)"}</div>
+                <div className="action">{"(Click Here)"}</div>
               )}
-            </>
+            </ActionableButton>
           )
         ) : (
           // when inEditMode...

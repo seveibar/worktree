@@ -8,6 +8,7 @@ import CheckBoxOutlineIcon from "@material-ui/icons/CheckBoxOutlineBlank"
 import * as colors from "@material-ui/core/colors"
 import Button from "@material-ui/core/Button"
 import EditNumber from "../EditNumber"
+import classnames from "classnames"
 
 const useStyles = makeStyles({
   iconButton: {
@@ -24,11 +25,38 @@ const useStyles = makeStyles({
     justifyContent: "center",
     alignItems: "center",
     width: 24
+  },
+  checkbox: {
+    color: "#fff",
+    marginLeft: 4,
+    width: 18,
+    height: 18,
+    "&.editable": {
+      color: "#fff",
+      width: 24,
+      height: 24,
+      padding: 4,
+      border: "4px dashed rgba(255,255,255,0.25)"
+    }
   }
 })
 
-const CheckBox = ({ checked, ...props }) =>
-  checked ? <CheckBoxIcon {...props} /> : <CheckBoxOutlineIcon {...props} />
+const CheckBox = ({ checked, onCheck, ...props }) =>
+  checked ? (
+    <CheckBoxIcon
+      {...props}
+      onClick={() => {
+        if (onCheck) onCheck(false)
+      }}
+    />
+  ) : (
+    <CheckBoxOutlineIcon
+      {...props}
+      onClick={() => {
+        if (onCheck) onCheck(true)
+      }}
+    />
+  )
 
 const Container = styled("div")({
   color: "#fff",
@@ -193,6 +221,7 @@ export default ({
   onChangeMeter,
   onDeleteRequirement
 }) => {
+  const c = useStyles()
   if (!meter) return <NoMeter>Missing Meter!</NoMeter>
 
   if (inEditMode)
@@ -239,7 +268,7 @@ export default ({
       <RightOfIconContainer>
         <TopContent>
           <MetricName>{meter.name}</MetricName>
-          {editableValue ? (
+          {editableValue && meter.outputType !== "boolean" ? (
             <>
               <div style={{ flexGrow: 1 }} />
               <EditNumber
@@ -249,9 +278,7 @@ export default ({
                   marginLeft: 8
                 }}
                 adderDistance={34}
-                onChange={value => {
-                  onChangeMeter({ ...meter, value })
-                }}
+                onChange={value => onChangeMeter({ ...meter, value })}
                 value={meter.value}
                 notEditingText={progressText}
               />
@@ -259,10 +286,14 @@ export default ({
           ) : (
             <ProgressText>{progressText}</ProgressText>
           )}
-          <CheckBox
-            style={{ color: "#fff", marginLeft: 4, width: 18, height: 18 }}
-            checked={progress >= 100}
-          />
+          {editableValue && meter.outputType === "boolean" && (
+            <CheckBox
+              className={classnames(c.checkbox, c.iconButton, "editable")}
+              onCheck={value => onChangeMeter({ ...meter, value })}
+              checked={meter.value}
+            />
+          )}
+          <CheckBox className={c.checkbox} checked={progress >= 100} />
         </TopContent>
         <ProgressBar>
           <div
