@@ -179,6 +179,7 @@ export default ({
   progress,
   onChangeFlatTree,
   onDeleteTree,
+  onUnlockTree,
   onChangeMeter
 }) => {
   const trackingElmRef = useRef()
@@ -328,11 +329,14 @@ export default ({
         {!inEditMode || !fullyOpen ? (
           complete ? (
             <>
-              <SmileIcon className="icon" />
+              <SmileIcon className="icon" style={{ margin: 8 }} />
               <div>Unlocked!</div>
             </>
           ) : (
-            <ActionableButton disabled={progress < 100 || !available}>
+            <ActionableButton
+              onClick={() => onUnlockTree(name)}
+              disabled={progress < 100 || !available}
+            >
               {progress < 100 || !available ? (
                 <LockIcon className="icon" />
               ) : (
