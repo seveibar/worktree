@@ -11,7 +11,7 @@ import getIn from "lodash/get"
 
 import NestedWorkTree from "./"
 
-const exampleTree = {
+export const exampleTree = {
   name: "Beginner Push Upper",
   description: "You can do this! Get started with...",
   rewards: ["Get Gym Membership"],
@@ -86,7 +86,7 @@ const exampleTree = {
   ]
 }
 
-const exampleMeters = {
+export const exampleMeters = {
   "fitness_tracker.total_push_ups": {
     name: "Total Push Ups",
     endpointName: "Fitness",
