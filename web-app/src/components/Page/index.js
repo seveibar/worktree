@@ -106,6 +106,7 @@ export default ({
   onChangeTitle,
   onChangeId,
   onCreateNew,
+  onClickEdit,
   onClone,
   id,
   title,
@@ -205,7 +206,7 @@ export default ({
           )}
         </Details>
         <Details style={{ justifyContent: "flex-end" }}>
-          <ClickableText onClick={onCreateNew}>
+          <ClickableText onClick={onClickEdit}>
             <EditIcon style={{ marginRight: 8 }} />
             Edit
           </ClickableText>

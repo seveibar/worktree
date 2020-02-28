@@ -8,11 +8,14 @@ import useTreeState from "./hooks/use-tree-state"
 import Page from "./components/Page"
 import NoTree from "./components/NoTree"
 import NestedWorkTree from "./components/NestedWorkTree"
+import LoadingScreen from "./components/LoadingScreen"
+import { exampleTree } from "./components/NestedWorkTree/index.stories.js"
 const emptyObj = {}
 
 function App() {
   const api = useAPI()
   const toast = useToast()
+  const [inEditMode, changeEditMode] = useState(false)
   const [route, changeRouteState] = useState(window.location.pathname)
   const changeRoute = (newRoute, title) => {
     changeRouteState(newRoute)
@@ -48,19 +51,19 @@ function App() {
 
   return (
     <Page
-      visibility="private"
+      visibility={dbTree ? (dbTree.public ? "public" : "private") : "..."}
       onChangeTitle={() => null}
       onChangeId={() => null}
       onChangeVisibility={() => null}
-      title="Fitness for Beginners"
-      id="fitness_for_beginners"
-      userName="seveibar"
+      title={dbTree ? dbTree.tree_name : "..."}
+      id={dbTree ? dbTree.tree_key : "..."}
+      treeOwnerName={dbTree ? dbTree.owner_name : "..."}
       onCreateNew={() => null}
-      onClickEdit={() => null}
+      onClickEdit={() => changeEditMode(true)}
       currentUserAccountName={account.account_name}
     >
       {loadingNestedTree ? (
-        "loading"
+        <LoadingScreen />
       ) : treeDoesNotExist ? (
         <NoTree
           onCreateTree={async () => {
@@ -75,13 +78,12 @@ function App() {
       ) : (
         <div style={{ paddingTop: 20 }}>
           <NestedWorkTree
-            inEditMode={false}
+            inEditMode={inEditMode}
             onChangeFlatTree={() => null}
             onChangeMeter={() => null}
             onUnlockTree={() => null}
             onDeleteTree={() => null}
             nestedTree={nestedTree}
-            treeOwnerName={dbTree.owner_name}
             meters={meters}
           />
         </div>

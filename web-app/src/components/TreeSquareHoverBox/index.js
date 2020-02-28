@@ -210,19 +210,18 @@ export default ({
 
   const [position, changePosition] = useState({})
 
-  const containerElm =
-    window.document.getElementById("page-content") || window.document.body
+  const containerElm = window.document.body
 
   useEffect(() => {
     if (!trackingElmRef.current) return
     let { x: tx, y: ty } = trackingElmRef.current.getBoundingClientRect()
     tx += window.pageXOffset
     ty += window.pageYOffset
-    if (containerElm !== window.document.body) {
-      const containerPos = containerElm.getBoundingClientRect()
-      tx -= containerPos.left
-      ty -= containerPos.top
-    }
+    // if (containerElm !== window.document.body) {
+    //   const containerPos = containerElm.getBoundingClientRect()
+    //   tx -= containerPos.left
+    //   ty -= containerPos.top
+    // }
     if (tx > (windowSize.width * 3) / 4) {
       tx -= 145 + WIDTH
     }
