@@ -2,12 +2,22 @@
   "name": "work-tree-db",
   "version": "0.0.1",
   "description": "Database migrations for work-tree",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "qspg compile migrations > migrate.sql && mkdir -p build && babel index.js > build/index.js",
+    "reset": "npm run build && psql -h localhost -U postgres -c \"DROP DATABASE worktree\" && node migrate.js",
+    "test": "ava tests/**/*.test.js"
   },
-  "author": "",
+  "author": "Severin Ibarluzea (@seveibar)",
+  "devDependencies": {
+    "ava": "^3.4.0"
+  },
   "dependencies": {
-    "qspg": "^1.0.10"
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.6",
+    "babel-plugin-macros": "^2.8.0",
+    "knex": "^0.20.10",
+    "qspg": "^1.0.10",
+    "raw.macro": "^0.3.0"
   }
 }

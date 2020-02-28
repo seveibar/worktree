@@ -1,0 +1,11 @@
+{
+  "name": "db-api",
+  "version": "1.0.0",
+  "description": "This subproject configures a postgrest database that can be called by the user to retrieve their data. The user data is secured with row-level security within the database.",
+  "main": "index.js",
+  "scripts": {
+    "start": "PGRST_DB_URI=postgres://postgres@localhost:5432/worktree postgrest postgrest.conf",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Severin Ibarluzea (@seveibar)"
+}
