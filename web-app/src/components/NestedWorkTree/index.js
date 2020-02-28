@@ -47,7 +47,7 @@ const NestedWorkTree = ({
   onAddChild
 }) => {
   let { complete = false, progress } = nestedTree.state || {}
-  if (complete) available = true
+  if (complete || !nestedTree.parent) available = true
   if (progress === undefined) progress = complete ? 100 : 0
 
   const windowSize = useWindowSize()

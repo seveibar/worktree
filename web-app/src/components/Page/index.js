@@ -3,6 +3,7 @@ import { styled } from "@material-ui/core/styles"
 import { useMouse, useLocalStorage } from "react-use"
 import AutoIcon from "../AutoIcon"
 import EditIcon from "@material-ui/icons/Edit"
+import ExitToAppIcon from "@material-ui/icons/ExitToApp"
 
 const emptyObj = {}
 const EXTEND_AMOUNT = 1.2
@@ -61,6 +62,12 @@ const ClickableText = styled("div")({
   justifyContent: "center",
   alignItems: "center"
 })
+const Detail = styled("div")({
+  backgroundColor: "#000",
+  display: "inline-flex",
+  justifyContent: "center",
+  alignItems: "center"
+})
 const RightSide = styled("div")({
   position: "absolute",
   right: 20,
@@ -102,7 +109,9 @@ export default ({
   onClone,
   id,
   title,
-  userName
+  treeOwnerName,
+  currentUserAccountName,
+  onLogOut
 }) => {
   const contentRef = useRef()
   const [headerFocus, changeHeaderFocus] = useState(false)
@@ -134,7 +143,7 @@ export default ({
         </Title>
         <Details>
           <div>
-            {userName} /{" "}
+            {treeOwnerName} /{" "}
             <EditableText
               onChange={e => onChangeId(e.target.value)}
               value={id}
@@ -186,6 +195,14 @@ export default ({
               <b>Updates</b>
             </Href>
           </ClickableText>
+          {currentUserAccountName && (
+            <>
+              <Detail>@{currentUserAccountName}</Detail>
+              <ClickableText onClick={onLogOut}>
+                <ExitToAppIcon style={{}} />
+              </ClickableText>
+            </>
+          )}
         </Details>
         <Details style={{ justifyContent: "flex-end" }}>
           <ClickableText onClick={onCreateNew}>

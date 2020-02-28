@@ -17,7 +17,7 @@ CREATE TABLE account (
   created_at timestamptz NOT NULL DEFAULT current_timestamp
 );
 
-CREATE OR REPLACE FUNCTION account_preinsert()
+CREATE OR REPLACE FUNCTION new_account()
   RETURNS trigger AS $TRIG$
   BEGIN
     IF NEW.account_name IS NULL THEN
@@ -27,9 +27,9 @@ CREATE OR REPLACE FUNCTION account_preinsert()
   END
   $TRIG$ LANGUAGE plpgsql;
 
-CREATE TRIGGER account_preinsert_trigger
+CREATE TRIGGER new_account_trigger
   BEFORE INSERT ON account
-  FOR EACH ROW EXECUTE PROCEDURE account_preinsert();
+  FOR EACH ROW EXECUTE PROCEDURE new_account();
 
 CREATE TABLE account_api_key (
   account_api_key_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -42,6 +42,7 @@ CREATE TABLE account_api_key (
 
 CREATE TABLE tree (
   tree_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
+  tree_num serial NOT NULL UNIQUE,
   tree_name text NOT NULL,
   tree_key text NOT NULL,
   owner_id uuid references account NOT NULL,
@@ -62,6 +63,26 @@ CREATE OR REPLACE FUNCTION change_last_modified()
 CREATE TRIGGER tree_change_last_modified_trigger
   BEFORE UPDATE ON tree
   FOR EACH ROW EXECUTE PROCEDURE change_last_modified();
+
+CREATE OR REPLACE FUNCTION new_tree()
+  RETURNS trigger AS $TRIG$
+  BEGIN
+    IF NEW.tree_name IS NULL THEN
+      NEW.tree_name := 'Tree ' || NEW.tree_num;
+    END IF;
+    IF NEW.tree_key IS NULL THEN
+      NEW.tree_key := 'tree_' || NEW.tree_num;
+    END IF;
+    IF NEW.tree_def IS NULL THEN
+      NEW.tree_def := '{"New Tree":{"name":"New Tree","description": "What is the first thing you will unlock\?"}}';
+    END IF;
+    RETURN NEW;
+  END
+  $TRIG$ LANGUAGE plpgsql;
+
+CREATE TRIGGER new_tree_trigger
+  BEFORE INSERT ON tree
+  FOR EACH ROW EXECUTE PROCEDURE new_tree();
 
 CREATE TABLE account_tree (
   account_tree_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -111,7 +132,24 @@ CREATE TABLE meter (
 );
 
 CREATE VIEW api.meter AS SELECT * FROM meter;
-CREATE VIEW api.tree AS SELECT * FROM tree;
+CREATE VIEW api.tree AS SELECT
+  tree_id,
+  tree_name,
+  tree_key,
+  owner_id,
+  tree_def,
+  public,
+  last_modified_at,
+  created_at,
+  (
+    SELECT account_name || '/' || tree_key FROM account
+      WHERE account.account_id=owner_id
+  ) as tree_path,
+  (
+    SELECT account_name FROM account
+      WHERE account.account_id=owner_id
+  ) as owner_name
+FROM tree;
 CREATE VIEW api.account AS SELECT * FROM account;
 CREATE VIEW api.account_tree AS SELECT * FROM account_tree;
 CREATE VIEW api.account_api_key AS SELECT * FROM account_api_key;
@@ -131,3 +169,5 @@ GRANT ALL ON ALL TABLES IN SCHEMA api TO api_user;
 
 GRANT ALL PRIVILEGES ON SCHEMA public TO api_user;
 GRANT ALL ON ALL TABLES IN SCHEMA public TO api_user;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO api_user;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO api_user;
