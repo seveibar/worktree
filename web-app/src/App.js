@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react"
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  useReducer
+} from "react"
 import useAPI, { APIProvider } from "./hooks/use-api.js"
 import useToast from "./hooks/use-toast.js"
 import useAccount from "./hooks/use-account.js"
@@ -11,12 +17,16 @@ import NestedWorkTree from "./components/NestedWorkTree"
 import LoadingScreen from "./components/LoadingScreen"
 import getNestedTreeMutators from "./methods/get-nested-tree-mutators"
 import { exampleTree } from "./components/NestedWorkTree/index.stories.js"
+import throttle from "lodash/throttle"
 const emptyObj = {}
 
 function App() {
   const api = useAPI()
   const toast = useToast()
-  const [inEditMode, changeEditMode] = useState(false)
+  const [inEditMode, toggleEditMode] = useReducer(
+    inEditMode => !inEditMode,
+    false
+  )
   const [route, changeRouteState] = useState(window.location.pathname)
   const changeRoute = (newRoute, title) => {
     changeRouteState(newRoute)
@@ -46,46 +56,63 @@ function App() {
     nestedTree,
     changeNestedTree,
     loadingNestedTree,
-    treeDoesNotExist
-  } = useNestedTree(window.location.pathname, treeState)
+    treeDoesNotExist,
+    changeDBTree
+  } = useNestedTree(route, treeState)
 
   const nestedTreeMutators = useMemo(
     () => getNestedTreeMutators(nestedTree, changeNestedTree),
     [nestedTree, changeNestedTree]
   )
 
+  const onChangeTitle = useCallback(
+    title => changeDBTree({ tree_name: title }),
+    [changeDBTree]
+  )
+  const onChangeId = useCallback(
+    async key => {
+      const newTree = await changeDBTree({ tree_key: key })
+      const newRoute = "/" + newTree.tree_path
+      changeRouteState(newRoute)
+      window.history.replaceState({}, newTree.tree_name, newRoute)
+    },
+    [dbTree]
+  )
+  const onChangeVisibility = useCallback(newVisibility => {
+    changeDBTree({ public: newVisibility === "public" })
+  }, [])
+
   const onChangeMeter = useCallback(() => {}, [])
   const onUnlockTree = useCallback(() => {}, [])
+  const onCreateNew = useCallback(async () => {
+    const response = await api.post(
+      "tree",
+      { owner_id: api.accountId },
+      { headers: { Prefer: "return=representation" } }
+    )
+    changeRoute("/" + response.data[0].tree_path)
+  }, [])
 
   const meters = useMeters()
 
   return (
     <Page
       visibility={dbTree ? (dbTree.public ? "public" : "private") : "..."}
-      onChangeTitle={() => null}
-      onChangeId={() => null}
-      onChangeVisibility={() => null}
-      title={dbTree ? dbTree.tree_name : "..."}
-      id={dbTree ? dbTree.tree_key : "..."}
-      treeOwnerName={dbTree ? dbTree.owner_name : "..."}
-      onCreateNew={() => null}
-      onClickToggleEdit={() => changeEditMode(!inEditMode)}
+      onChangeTitle={onChangeTitle}
+      onChangeId={onChangeId}
+      onChangeVisibility={onChangeVisibility}
+      title={dbTree && dbTree.tree_name}
+      id={dbTree && dbTree.tree_key}
+      treeOwnerName={dbTree && dbTree.owner_name}
+      onCreateNew={onCreateNew}
+      onClickToggleEdit={toggleEditMode}
       inEditMode={inEditMode}
       currentUserAccountName={account.account_name}
     >
       {loadingNestedTree ? (
         <LoadingScreen />
       ) : treeDoesNotExist ? (
-        <NoTree
-          onCreateTree={async () => {
-            const response = await api.post(
-              "tree",
-              { owner_id: api.accountId },
-              { headers: { Prefer: "return=representation" } }
-            )
-            changeRoute("/" + response.data[0].tree_path)
-          }}
-        />
+        <NoTree onCreateTree={onCreateNew} />
       ) : (
         <div style={{ paddingTop: 20 }}>
           <NestedWorkTree

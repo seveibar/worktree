@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useRef, useState, useEffect } from "react"
 import { styled } from "@material-ui/core/styles"
 import { useMouse, useLocalStorage } from "react-use"
 import AutoIcon from "../AutoIcon"
@@ -121,6 +121,12 @@ export default ({
   const contentRef = useRef()
   const [headerFocus, changeHeaderFocus] = useState(false)
   const [extendMode, changeExtendMode] = useLocalStorage("extendMode", false)
+  const [editableTitle, changeEditableTitle] = useState(title)
+  const [editableId, changeEditableId] = useState(id)
+
+  useEffect(() => title && changeEditableTitle(title), [title])
+  useEffect(() => id && changeEditableId(id), [id])
+
   let contentStyle = emptyObj
   let bgStyle = emptyObj
   let invBGStyle = emptyObj
@@ -144,14 +150,21 @@ export default ({
         style={!headerFocus ? bgStyle : { ...bgStyle, zIndex: 100, opacity: 1 }}
       >
         <Title>
-          <EditableText value={title} />
+          <EditableText
+            value={editableTitle || ""}
+            onChange={e => changeEditableTitle(e.target.value)}
+            onBlur={() =>
+              editableTitle !== title && onChangeTitle(editableTitle)
+            }
+          />
         </Title>
         <Details>
           <div>
-            {treeOwnerName} /{" "}
+            {treeOwnerName || ""} /{" "}
             <EditableText
-              onChange={e => onChangeId(e.target.value)}
-              value={id}
+              onChange={e => changeEditableId(e.target.value)}
+              onBlur={() => id !== editableId && onChangeId(editableId)}
+              value={editableId || ""}
             />
           </div>
           <ClickableText

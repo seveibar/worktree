@@ -34,6 +34,7 @@ export default treePath => {
         }
       )
       changeTree(data[0])
+      return data[0]
     },
     [treePath]
   )
