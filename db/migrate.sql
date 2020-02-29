@@ -123,7 +123,7 @@ IF (db_version=0) THEN
       account_tree_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
       account_id uuid references account NOT NULL,
       tree_id uuid references tree NOT NULL,
-      state jsonb NOT NULL,
+      state jsonb NOT NULL DEFAULT '{}',
       complete boolean NOT NULL DEFAULT FALSE,
       last_modified_at timestamptz NOT NULL DEFAULT current_timestamp,
       created_at timestamptz NOT NULL DEFAULT current_timestamp
@@ -186,7 +186,24 @@ IF (db_version=0) THEN
       ) as owner_name
     FROM tree;
     CREATE VIEW api.account AS SELECT * FROM account;
-    CREATE VIEW api.account_tree AS SELECT * FROM account_tree;
+    CREATE VIEW api.account_tree AS SELECT
+      account_tree_id,
+      account_id,
+      tree_id,
+      state,
+      complete,
+      last_modified_at,
+      created_at,
+      (
+        SELECT tree_key FROM tree WHERE tree.tree_id=account_tree.tree_id
+      ) as tree_key,
+      (
+        SELECT account_name || '/' || (
+          SELECT tree_key FROM tree WHERE tree.tree_id=account_tree.tree_id
+        ) FROM account
+          WHERE account.account_id=account_tree.account_id
+      ) as tree_path
+    FROM account_tree;
     CREATE VIEW api.account_api_key AS SELECT * FROM account_api_key;
     CREATE VIEW api.account_endpoint AS SELECT * FROM account_endpoint;
     CREATE VIEW api.endpoint AS SELECT * FROM endpoint;

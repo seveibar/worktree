@@ -1,4 +1,14 @@
 {
   "builds": [],
-  "routes": [{ "src": "/api/db/(.*)", "dest": "http://localhost:3002/$1" }]
+  "routes": [
+    {
+      "src": "/api/db/meter",
+      "methods": ["POST"],
+      "headers": {
+        "Prefer": "resolution=merge-duplicates,return=representation"
+      },
+      "continue": true
+    },
+    { "src": "/api/db/(.*)", "dest": "http://localhost:3002/$1" }
+  ]
 }

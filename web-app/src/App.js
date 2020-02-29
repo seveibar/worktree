@@ -7,7 +7,7 @@ import React, {
 } from "react"
 import useAPI, { APIProvider } from "./hooks/use-api.js"
 import useToast from "./hooks/use-toast.js"
-import useAccount from "./hooks/use-account.js"
+import useAccount, { AccountProvider } from "./hooks/use-account.js"
 import useNestedTree from "./hooks/use-nested-tree.js"
 import useMeters from "./hooks/use-meters.js"
 import useTreeState from "./hooks/use-tree-state"
@@ -16,6 +16,7 @@ import NoTree from "./components/NoTree"
 import NestedWorkTree from "./components/NestedWorkTree"
 import LoadingScreen from "./components/LoadingScreen"
 import getNestedTreeMutators from "./methods/get-nested-tree-mutators"
+import getNestedTreeWithNestedState from "./methods/get-nested-tree-with-nested-state"
 import { exampleTree } from "./components/NestedWorkTree/index.stories.js"
 import throttle from "lodash/throttle"
 const emptyObj = {}
@@ -50,7 +51,7 @@ function App() {
   }, [api.accountId])
 
   const account = useAccount() || emptyObj
-  const treeState = useTreeState(route)
+  const [treeState, changeTreeState] = useTreeState(route)
   const {
     dbTree,
     nestedTree,
@@ -61,14 +62,23 @@ function App() {
   } = useNestedTree(route, treeState)
 
   const nestedTreeMutators = useMemo(
-    () => getNestedTreeMutators(nestedTree, changeNestedTree),
-    [nestedTree, changeNestedTree]
+    () =>
+      getNestedTreeMutators(
+        nestedTree,
+        changeNestedTree,
+        treeState,
+        changeTreeState
+      ),
+    [nestedTree, changeNestedTree, treeState, changeTreeState]
   )
 
   const onChangeTitle = useCallback(
     title => changeDBTree({ tree_name: title }),
     [changeDBTree]
   )
+
+  const { meters, onChangeMeter } = useMeters()
+
   const onChangeId = useCallback(
     async key => {
       const newTree = await changeDBTree({ tree_key: key })
@@ -76,14 +86,37 @@ function App() {
       changeRouteState(newRoute)
       window.history.replaceState({}, newTree.tree_name, newRoute)
     },
-    [dbTree]
+    [dbTree, changeDBTree]
   )
-  const onChangeVisibility = useCallback(newVisibility => {
-    changeDBTree({ public: newVisibility === "public" })
-  }, [])
+  const onChangeVisibility = useCallback(
+    newVisibility => {
+      changeDBTree({ public: newVisibility === "public" })
+    },
+    [changeDBTree]
+  )
 
-  const onChangeMeter = useCallback(() => {}, [])
-  const onUnlockTree = useCallback(() => {}, [])
+  const onClone = useCallback(async () => {
+    const response = await api.post(
+      "tree",
+      {
+        tree_def: dbTree.tree_def,
+        tree_name: dbTree.tree_name,
+        tree_key: dbTree.tree_key
+      },
+      { headers: { Prefer: "return=representation" } }
+    )
+    const newTreePath = response.data[0].tree_path
+    changeRouteState(`/${newTreePath}`)
+  }, [dbTree, account])
+  const onUnlockTree = useCallback(
+    treeName => {
+      changeTreeState({
+        ...treeState,
+        [treeName]: { ...treeState[treeName], complete: true }
+      })
+    },
+    [treeState]
+  )
   const onCreateNew = useCallback(async () => {
     const response = await api.post(
       "tree",
@@ -91,15 +124,19 @@ function App() {
       { headers: { Prefer: "return=representation" } }
     )
     changeRoute("/" + response.data[0].tree_path)
-  }, [])
+  }, [api.accountId])
 
-  const meters = useMeters()
+  const nestedTreeWithNestedState = useMemo(
+    () => getNestedTreeWithNestedState(nestedTree, treeState),
+    [nestedTree, treeState]
+  )
 
   return (
     <Page
       visibility={dbTree ? (dbTree.public ? "public" : "private") : "..."}
       onChangeTitle={onChangeTitle}
       onChangeId={onChangeId}
+      onClone={onClone}
       onChangeVisibility={onChangeVisibility}
       title={dbTree && dbTree.tree_name}
       id={dbTree && dbTree.tree_key}
@@ -117,7 +154,7 @@ function App() {
         <div style={{ paddingTop: 20 }}>
           <NestedWorkTree
             inEditMode={inEditMode}
-            nestedTree={nestedTree}
+            nestedTree={nestedTreeWithNestedState}
             onChangeMeter={onChangeMeter}
             onUnlockTree={onUnlockTree}
             meters={meters}
@@ -131,6 +168,8 @@ function App() {
 
 export default () => (
   <APIProvider>
-    <App />
+    <AccountProvider>
+      <App />
+    </AccountProvider>
   </APIProvider>
 )

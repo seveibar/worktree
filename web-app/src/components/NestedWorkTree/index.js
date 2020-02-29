@@ -61,10 +61,9 @@ const NestedWorkTree = ({
   singleChild = false,
   onAddChild
 }) => {
-  let { complete = false, progress } = nestedTree.state || emptyObj
+  let { complete = false } = nestedTree.state || emptyObj
   if (complete || !nestedTree.parent) available = true
   if (isRoot) singleChild = true
-  if (progress === undefined) progress = complete ? 100 : 0
 
   const onAddChildOnLeft = useEventCallback(() => onAddChild("left"))
   const onAddChildOnRight = useEventCallback(() => onAddChild("right"))
@@ -175,20 +174,7 @@ const NestedWorkTree = ({
                 singleChild={
                   childIndex === 0 && nestedTree.children.length === 1
                 }
-                onAddChild={leftOrRight => {
-                  const addBefore =
-                    leftOrRight === "left" ? childIndex : childIndex + 1
-                  onChangeFlatTree(
-                    [nestedTree.name, "children"],
-                    [
-                      ...nestedTree.children.slice(0, addBefore),
-                      getNewAchievement(),
-                      ...nestedTree.children
-                        .slice(addBefore)
-                        .map(c => ({ ...c, order: c.order + 1 }))
-                    ]
-                  )
-                }}
+                onAddChild={onAddChildHandlers[childIndex]}
               />
             ))}
           </Children>

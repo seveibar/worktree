@@ -30,8 +30,10 @@ const Title = styled("div")({
   fontSize: 32,
   fontWeight: "bold",
   backgroundColor: "#000",
-  padding: 16,
-  color: "#fff"
+  color: "#fff",
+  "& input": {
+    padding: 16
+  }
 })
 const Details = styled("div")({
   display: "flex",
@@ -42,7 +44,10 @@ const Details = styled("div")({
     marginLeft: 0,
     marginBottom: 0
   },
-  color: "#fff"
+  color: "#fff",
+  "& input": {
+    padding: 8
+  }
 })
 const EditableText = styled("input")({
   color: "inherit",
@@ -153,16 +158,22 @@ export default ({
           <EditableText
             value={editableTitle || ""}
             onChange={e => changeEditableTitle(e.target.value)}
+            onKeyPress={e =>
+              e.key === "Enter" && window.document.activeElement.blur()
+            }
             onBlur={() =>
               editableTitle !== title && onChangeTitle(editableTitle)
             }
           />
         </Title>
         <Details>
-          <div>
+          <div style={{ padding: 0, paddingLeft: 8 }}>
             {treeOwnerName || ""} /{" "}
             <EditableText
               onChange={e => changeEditableId(e.target.value)}
+              onKeyPress={e =>
+                e.key === "Enter" && window.document.activeElement.blur()
+              }
               onBlur={() => id !== editableId && onChangeId(editableId)}
               value={editableId || ""}
             />

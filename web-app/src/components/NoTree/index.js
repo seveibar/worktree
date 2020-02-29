@@ -7,15 +7,14 @@ const Container = styled("div")({
   fontSize: 32,
   color: colors.grey[800],
   fontWeight: "bold",
-  textAlign: "center",
-  paddingTop: 250
+  textAlign: "center"
 })
 
 const CreateTreeButton = styled(Button)({
   backgroundColor: "#000",
   padding: 32,
-  paddingTop: 24,
-  paddingBottom: 24,
+  paddingTop: 16,
+  paddingBottom: 16,
   margin: 64,
   fontSize: 32,
   color: "#fff",

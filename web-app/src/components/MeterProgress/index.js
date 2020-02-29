@@ -123,14 +123,14 @@ const ProgressBar = styled("div")({
   }
 })
 const NoMeter = styled("div")({
-  color: "#fff",
+  color: "rgba(255,255,255,0.5)",
   fontWeight: "bold",
-  backgroundColor: colors.red[600],
-  textAlign: "center",
-  width: "100%",
+  backgroundColor: "rgba(0,0,0,0.5)",
   padding: 8,
   marginTop: 8,
-  marginBottom: 8
+  marginBottom: 8,
+  display: "flex",
+  alignItems: "center"
 })
 
 const EditRequirement = ({
@@ -214,6 +214,7 @@ const EditRequirement = ({
 export default ({
   requirement,
   meter,
+  meterKey,
   state = {},
   inEditMode,
   editableValue,
@@ -222,7 +223,16 @@ export default ({
   onDeleteRequirement
 }) => {
   const c = useStyles()
-  if (!meter) return <NoMeter>Missing Meter!</NoMeter>
+  if (!meter)
+    return (
+      <NoMeter>
+        <div>Missing Meter "{meterKey}"</div>
+        <div style={{ flexGrow: 1 }} />
+        {inEditMode && (
+          <TrashIcon className={c.iconButton} onClick={onDeleteRequirement} />
+        )}
+      </NoMeter>
+    )
 
   if (inEditMode)
     return (

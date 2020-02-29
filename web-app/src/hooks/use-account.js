@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react"
+import React, { createContext, useState, useEffect, useContext } from "react"
 import useAPI from "./use-api"
 
-export default () => {
+const AccountContext = createContext()
+
+export const AccountProvider = ({ children }) => {
   const api = useAPI()
   const [account, changeAccount] = useState()
 
@@ -17,5 +19,13 @@ export default () => {
     getAccount()
   }, [api.accountId])
 
-  return account
+  return (
+    <AccountContext.Provider value={account}>
+      {children}
+    </AccountContext.Provider>
+  )
+}
+
+export default () => {
+  return useContext(AccountContext)
 }

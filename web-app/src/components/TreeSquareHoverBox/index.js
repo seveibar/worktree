@@ -280,6 +280,7 @@ export default ({
                 inEditMode={inEditMode}
                 editableValue={fullyOpen}
                 key={meterKey}
+                meterKey={meterKey}
                 meter={meters[meterKey]}
                 requirement={requirement}
                 onChangeRequirement={newRequirement => {

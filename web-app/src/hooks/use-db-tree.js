@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react"
 import useAPI from "./use-api"
+import removeFlatTreeState from "../methods/remove-flat-tree-state.js"
 
 export default treePath => {
   if (treePath.startsWith("/")) treePath = treePath.slice(1)
@@ -26,6 +27,9 @@ export default treePath => {
 
   const changeDBTree = useCallback(
     async changes => {
+      if (changes.tree_def) {
+        changes.tree_def = removeFlatTreeState(changes.tree_def)
+      }
       const { data } = await api.patch(
         `tree?tree_path=eq.${treePath}`,
         changes,
