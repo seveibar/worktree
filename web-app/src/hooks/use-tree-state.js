@@ -37,14 +37,15 @@ export default treePath => {
           `tree?tree_path=eq.${treePath}`
         )
         if (matchingTrees.length === 0) return
-        ;({ data } = await api.post(
+        const postRes = await api.post(
           "account_tree",
           {
             account_id: api.accountId,
             tree_id: matchingTrees[0].tree_id
           },
-          { Prefer: "return=representation" }
-        ))
+          { headers: { Prefer: "return=representation" } }
+        )
+        data = postRes.data
       }
       changeState(data[0].state)
     }

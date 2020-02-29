@@ -43,8 +43,8 @@ CREATE TABLE account_api_key (
 CREATE TABLE tree (
   tree_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
   tree_num serial NOT NULL UNIQUE,
-  tree_name text NOT NULL,
-  tree_key text NOT NULL,
+  tree_name text NOT NULL UNIQUE,
+  tree_key text NOT NULL UNIQUE,
   owner_id uuid references account NOT NULL,
   tree_def jsonb NOT NULL,
   public boolean NOT NULL DEFAULT FALSE,

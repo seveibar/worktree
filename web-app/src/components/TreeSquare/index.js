@@ -23,11 +23,16 @@ const Container = styled("div")({
   boxShadow: "0px 3px 3px rgba(0,0,0,0.2)",
   cursor: "pointer",
   transition:
-    "transform 80ms linear, margin-left 200ms ease, margin-right 200ms ease",
+    "transform 80ms linear, margin-left 200ms ease, margin-right 200ms ease, filter 80ms ease",
   "&:hover": {
     transform: "scale(1.05,1.05)"
   },
-  zIndex: 1
+  zIndex: 1,
+  "&&&.justCompleted": {
+    transform: "scale(1.5,1.5)",
+    transition: "transform 80ms ease, filter 80ms ease",
+    filter: "brightness(150%)"
+  }
 })
 
 const Title = styled("div")({
@@ -137,6 +142,8 @@ export default props => {
 
   const [mouseOver, changeMouseOver] = useState()
   const [fullyOpen, changeFullyOpen] = useState(false)
+  const [justCompleted, changeJustCompleted] = useState(null)
+
   useEffect(() => {
     if (mouseOver || !fullyOpen) return
     const timeout = setTimeout(() => {
@@ -144,6 +151,16 @@ export default props => {
     }, 500)
     return () => clearTimeout(timeout)
   }, [fullyOpen, mouseOver])
+
+  useEffect(() => {
+    if (!complete || inEditMode) return changeJustCompleted(false)
+    if (justCompleted === false) {
+      changeJustCompleted(true)
+      setTimeout(() => {
+        changeJustCompleted(false)
+      }, 120)
+    }
+  }, [complete])
 
   return (
     <Container
@@ -155,6 +172,7 @@ export default props => {
         if (!mouseOver) return
         changeMouseOver(false)
       }}
+      className={{ justCompleted }}
       onClick={() => changeFullyOpen(true)}
     >
       <Title>{name}</Title>

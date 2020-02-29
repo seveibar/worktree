@@ -101,7 +101,8 @@ function App() {
       {
         tree_def: dbTree.tree_def,
         tree_name: dbTree.tree_name,
-        tree_key: dbTree.tree_key
+        tree_key: dbTree.tree_key,
+        owner_id: api.accountId
       },
       { headers: { Prefer: "return=representation" } }
     )
@@ -124,6 +125,7 @@ function App() {
       { headers: { Prefer: "return=representation" } }
     )
     changeRoute("/" + response.data[0].tree_path)
+    if (!inEditMode) toggleEditMode()
   }, [api.accountId])
 
   const nestedTreeWithNestedState = useMemo(

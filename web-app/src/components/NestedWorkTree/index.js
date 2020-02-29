@@ -150,6 +150,7 @@ const NestedWorkTree = ({
         progress={getTreeProgress(nestedTree, meters)}
         complete={complete}
         available={available}
+        isRoot={isRoot}
       />
       {(nestedTree.children || []).length > 0 && (
         <>

@@ -71,8 +71,7 @@ const Title = styled("div")({
 const DescriptionContainer = styled("div")({
   color: "#fff",
   padding: 16,
-  // paddingTop: 8,
-  // paddingBottom: 0,
+  whiteSpace: "prewrap",
   minHeight: 50,
   "&.editable": editStripes
 })
@@ -175,6 +174,7 @@ export default ({
   requirements = [],
   meters,
   inEditMode,
+  isRoot,
   state,
   progress,
   onChangeFlatTree,
@@ -217,11 +217,6 @@ export default ({
     let { x: tx, y: ty } = trackingElmRef.current.getBoundingClientRect()
     tx += window.pageXOffset
     ty += window.pageYOffset
-    // if (containerElm !== window.document.body) {
-    //   const containerPos = containerElm.getBoundingClientRect()
-    //   tx -= containerPos.left
-    //   ty -= containerPos.top
-    // }
     if (tx > (windowSize.width * 3) / 4) {
       tx -= 145 + WIDTH
     }
@@ -255,6 +250,9 @@ export default ({
         <div
           suppressContentEditableWarning={true}
           contentEditable={inEditMode && fullyOpen}
+          onKeyPress={e =>
+            e.key === "Enter" && window.document.activeElement.blur()
+          }
           ref={titleElm}
           style={{ backgroundColor: color[500] }}
           className={classnames("text", inEditMode && fullyOpen && "editable")}
@@ -364,7 +362,7 @@ export default ({
           // when inEditMode...
           <>
             <Box display="flex" flexGrow={1} />
-            <StyledTrashIcon onClick={() => onDeleteTree(name)} />
+            {!isRoot && <StyledTrashIcon onClick={() => onDeleteTree(name)} />}
           </>
         )}
       </ActionableText>
