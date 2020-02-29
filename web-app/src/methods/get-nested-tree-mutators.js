@@ -30,7 +30,8 @@ export default (nestedTree, changeNestedTree) => {
       const nestedSubTreePath = getNestedTreePath(nestedTree, treeName)
       const { parent: parentName } = getIn(nestedTree, nestedSubTreePath)
       const nestedSubTreeParentPath = getNestedTreePath(nestedTree, parentName)
-      const parent = getIn(nestedTree, nestedSubTreeParentPath)
+      let parent = getIn(nestedTree, nestedSubTreeParentPath)
+      if (nestedSubTreeParentPath.length === 0) parent = nestedTree
 
       changeNestedTree(
         setIn(

@@ -1,4 +1,4 @@
-import React, { useRef, useReducer, useState, useEffect } from "react"
+import React, { useRef, useReducer, useState, useEffect, useMemo } from "react"
 import { useInterval } from "react-use"
 import useWindowSize from "../../hooks/use-window-size.js"
 import { styled } from "@material-ui/core/styles"
@@ -6,8 +6,11 @@ import TreeSquare from "../TreeSquare"
 import { default as setIn } from "lodash/set"
 import * as colors from "@material-ui/core/colors"
 import getTreeProgress from "../../methods/get-tree-progress.js"
+import useEventCallback from "../../hooks/use-event-callback.js"
 import AddSquare from "../AddSquare"
 import isEqual from "lodash/isEqual"
+
+const emptyObj = {}
 
 const Container = styled("div")({
   position: "relative",
@@ -22,151 +25,118 @@ const Children = styled("div")({
   justifyContent: "center"
 })
 
-const getNewAchievement = () => ({
-  name: "New Achievement " + Math.floor(Math.random() * 10000)
+const LeftAddSquare = styled(AddSquare)({
+  position: "absolute",
+  top: 60,
+  left: "calc(50% - 120px)"
+})
+const RightAddSquare = styled(AddSquare)({
+  position: "absolute",
+  top: 60,
+  left: "calc(50% + 70px)"
+})
+const BottomAddSquare = styled(AddSquare)({
+  position: "absolute",
+  top: 150,
+  left: "calc(50% - 25px)"
 })
 
-const getElmCoords = elm => {
-  const d = elm.getBoundingClientRect()
-  d.x += window.pageXOffset
-  d.y += window.pageYOffset
-  return d
-}
+const getNewAchievement = parent => ({
+  name: "New Achievement " + Math.floor(Math.random() * 10000),
+  parent
+})
 
 const NestedWorkTree = ({
   nestedTree,
-  onDrawn,
   available = false,
-  meters = {},
+  meters = emptyObj,
   isRoot = true,
   inEditMode = false,
   onChangeFlatTree,
   onDeleteTree,
   onChangeMeter,
   onUnlockTree,
+  leftMost = false,
+  rightMost = false,
+  singleChild = false,
   onAddChild
 }) => {
-  let { complete = false, progress } = nestedTree.state || {}
+  let { complete = false, progress } = nestedTree.state || emptyObj
   if (complete || !nestedTree.parent) available = true
+  if (isRoot) singleChild = true
   if (progress === undefined) progress = complete ? 100 : 0
 
-  const windowSize = useWindowSize()
-  const containerRef = useRef()
-  const [containerCoords, changeContainerCoords] = useState()
-  const childCoordinates = useRef((nestedTree.children || []).map(c => null))
-  const changeChildCoordinates = ({ childIndex, coords }) =>
-    setIn(childCoordinates.current, childIndex, coords)
+  const onAddChildOnLeft = useEventCallback(() => onAddChild("left"))
+  const onAddChildOnRight = useEventCallback(() => onAddChild("right"))
+  const onAddChildBelow = useEventCallback(() => {
+    onChangeFlatTree(
+      [nestedTree.name, "children"],
+      [getNewAchievement(nestedTree.name)]
+    )
+  })
 
-  useEffect(() => {
-    if (containerRef.current !== null) {
-      const myCoords = getElmCoords(containerRef.current)
-      changeContainerCoords(myCoords)
-      if (onDrawn) onDrawn(myCoords)
+  const onAddChildHandlers = (nestedTree.children || []).map(
+    (child, childIndex) => leftOrRight => {
+      const addBefore = leftOrRight === "left" ? childIndex : childIndex + 1
+      onChangeFlatTree(
+        [nestedTree.name, "children"],
+        [
+          ...nestedTree.children.slice(0, addBefore),
+          getNewAchievement(),
+          ...nestedTree.children.slice(addBefore)
+        ]
+      )
     }
-    return () => {}
-  }, [containerRef, windowSize.width, windowSize.height])
-
-  // This is all to handle children being added
-  useInterval(
-    () => {
-      if (containerRef.current !== null) {
-        const newCoords = getElmCoords(containerRef.current)
-        if (!isEqual(containerCoords, newCoords)) {
-          changeContainerCoords(newCoords)
-          if (onDrawn) onDrawn(newCoords)
-        }
-      }
-    },
-    inEditMode ? 20 : null
   )
 
-  const [svgPath, changeSVGPath] = useState()
-
-  useEffect(() => {
-    if (
-      !containerCoords ||
-      childCoordinates.current.length === 0 ||
-      childCoordinates.current.some(c => c === null)
-    )
-      return
-    const bottomOfRootSquare = [containerCoords.width / 2, 130]
-    const bottomSquareConnect = [
-      bottomOfRootSquare[0],
-      bottomOfRootSquare[1] + 30
-    ]
-    const childTouchPoints = childCoordinates.current
-      .map(({ x, y, width }) => parseFloat(x) - containerCoords.x + width / 2)
-      .sort((a, b) => a - b)
-
-    changeSVGPath(
-      [
-        `M${bottomOfRootSquare.join(" ")}`,
-        `L${bottomSquareConnect.join(" ")}`,
-        `M${childTouchPoints[0]} ${bottomSquareConnect[1]}`,
-        `L${childTouchPoints.slice(-1)[0]} ${bottomSquareConnect[1]}`,
-        ...childTouchPoints.map(x => `M${x} ${bottomSquareConnect[1]}l0 40`)
-      ].join(" ")
-    )
-  }, [containerCoords, childCoordinates])
-
   return (
-    <Container ref={containerRef}>
-      <svg
-        style={{
-          position: "absolute",
-          pointerEvents: "none",
-          width: "100%",
-          height: "100%",
-          top: 0,
-          left: 0
-        }}
-      >
-        {svgPath && (
-          <path
-            fill="none"
-            strokeLinecap="square"
-            stroke={complete ? colors.blue[200] : colors.grey[400]}
-            strokeWidth="5"
-            d={svgPath}
-          />
-        )}
-      </svg>
+    <Container>
+      {!singleChild && (
+        <div
+          style={{
+            position: "absolute",
+            height: 5,
+            backgroundColor: available ? colors.blue[200] : colors.grey[400],
+            left: rightMost ? 0 : leftMost ? "50%" : 0,
+            right: rightMost ? "50%" : 0,
+            top: -5
+          }}
+        />
+      )}
+      {!isRoot && (
+        <div
+          style={{
+            position: "absolute",
+            height: 50,
+            backgroundColor: available ? colors.blue[200] : colors.grey[400],
+            left: "calc(50% - 2.5px)",
+            width: 5,
+            top: -5
+          }}
+        />
+      )}
+      {(nestedTree.children || []).length !== 0 && (
+        <div
+          style={{
+            position: "absolute",
+            height: 30,
+            backgroundColor: complete ? colors.blue[200] : colors.grey[400],
+            left: "calc(50% - 2.5px)",
+            width: 5,
+            top: 140
+          }}
+        />
+      )}
       {inEditMode && (
         <>
           {!isRoot && (
             <>
-              <AddSquare
-                onClick={() => onAddChild("left")}
-                style={{
-                  position: "absolute",
-                  top: 60,
-                  left: "calc(50% - 120px)"
-                }}
-              />
-              <AddSquare
-                style={{
-                  position: "absolute",
-                  top: 60,
-                  left: "calc(50% + 70px)"
-                }}
-                onClick={() => onAddChild("right")}
-              />
+              <LeftAddSquare onClick={onAddChildOnLeft} />
+              <RightAddSquare onClick={onAddChildOnRight} />
             </>
           )}
           {(nestedTree.children || []).length === 0 && (
-            <AddSquare
-              style={{
-                position: "absolute",
-                top: 150,
-                left: "calc(50% - 25px)"
-              }}
-              onClick={() =>
-                onChangeFlatTree(
-                  [nestedTree.name, "children"],
-                  [getNewAchievement()]
-                )
-              }
-            />
+            <BottomAddSquare onClick={onAddChildBelow} />
           )}
         </>
       )}
@@ -197,8 +167,13 @@ const NestedWorkTree = ({
                 onUnlockTree={onUnlockTree}
                 onDeleteTree={onDeleteTree}
                 onChangeMeter={onChangeMeter}
-                onDrawn={coords =>
-                  changeChildCoordinates({ childIndex, coords })
+                leftMost={childIndex === 0 && nestedTree.children.length > 1}
+                rightMost={
+                  childIndex === nestedTree.children.length - 1 &&
+                  nestedTree.children.length > 1
+                }
+                singleChild={
+                  childIndex === 0 && nestedTree.children.length === 1
                 }
                 onAddChild={leftOrRight => {
                   const addBefore =
@@ -208,7 +183,9 @@ const NestedWorkTree = ({
                     [
                       ...nestedTree.children.slice(0, addBefore),
                       getNewAchievement(),
-                      ...nestedTree.children.slice(addBefore)
+                      ...nestedTree.children
+                        .slice(addBefore)
+                        .map(c => ({ ...c, order: c.order + 1 }))
                     ]
                   )
                 }}

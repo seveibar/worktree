@@ -11,12 +11,12 @@ const EXTEND_AMOUNT = 1.2
 
 const Page = styled("div")({
   position: "relative",
-  overflow: "hidden",
   width: "100vw",
-  height: "100vh"
+  height: "100vh",
+  overflow: "scroll"
 })
 const Header = styled("div")({
-  position: "absolute",
+  position: "fixed",
   left: 20,
   top: 20,
   zIndex: 1,
@@ -70,7 +70,7 @@ const Detail = styled("div")({
   alignItems: "center"
 })
 const RightSide = styled("div")({
-  position: "absolute",
+  position: "fixed",
   right: 20,
   top: 20,
   zIndex: 1,
@@ -87,9 +87,11 @@ const Content = styled("div")({
   position: "absolute",
   top: 0,
   left: 0,
-  width: "100vw",
-  height: "100vh",
-  overflow: "hidden",
+  minWidth: "100vw",
+  minHeight: "100vh",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
   transition: "top linear 30ms, left linear 30ms"
 })
 
