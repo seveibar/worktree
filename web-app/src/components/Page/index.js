@@ -3,6 +3,7 @@ import { styled } from "@material-ui/core/styles"
 import { useMouse, useLocalStorage } from "react-use"
 import AutoIcon from "../AutoIcon"
 import EditIcon from "@material-ui/icons/Edit"
+import WorkIcon from "@material-ui/icons/PlayCircleOutline"
 import ExitToAppIcon from "@material-ui/icons/ExitToApp"
 
 const emptyObj = {}
@@ -106,7 +107,8 @@ export default ({
   onChangeTitle,
   onChangeId,
   onCreateNew,
-  onClickEdit,
+  onClickToggleEdit,
+  inEditMode,
   onClone,
   id,
   title,
@@ -206,9 +208,18 @@ export default ({
           )}
         </Details>
         <Details style={{ justifyContent: "flex-end" }}>
-          <ClickableText onClick={onClickEdit}>
-            <EditIcon style={{ marginRight: 8 }} />
-            Edit
+          <ClickableText onClick={onClickToggleEdit}>
+            {!inEditMode ? (
+              <>
+                <EditIcon style={{ marginRight: 8 }} />
+                Edit
+              </>
+            ) : (
+              <>
+                <WorkIcon style={{ marginRight: 8 }} />
+                Work
+              </>
+            )}
           </ClickableText>
           <ClickableText onClick={onCreateNew}>Create New</ClickableText>
         </Details>

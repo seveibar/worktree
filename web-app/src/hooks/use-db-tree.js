@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react"
+import React, { useState, useEffect, useCallback, useMemo } from "react"
 import useAPI from "./use-api"
 
 export default treePath => {
@@ -9,11 +9,11 @@ export default treePath => {
   const [dbTree, changeTree] = useState()
 
   useEffect(() => {
+    if (!treePath) return
     async function callAPI() {
       const { data } = await api.get(
         `tree?tree_path=eq.${encodeURIComponent(treePath)}`
       )
-      console.log(treePath, data)
       if (data.length === 0) {
         changeTreeDoesNotExist(true)
       } else {
@@ -24,7 +24,31 @@ export default treePath => {
     callAPI()
   }, [treePath])
 
-  const reloadDBTree = useMemo(() => {}, [])
+  const changeDBTree = useCallback(
+    async changes => {
+      const { data } = await api.patch(
+        `tree?tree_path=eq.${treePath}`,
+        changes,
+        {
+          headers: { Prefer: "return=representation" }
+        }
+      )
+      changeTree(data[0])
+    },
+    [treePath]
+  )
 
-  return { dbTree, reloadDBTree, changeTree, loadingDBTree, treeDoesNotExist }
+  const reloadDBTree = useCallback(() => {}, [])
+
+  return useMemo(
+    () => ({
+      dbTree,
+      reloadDBTree,
+      changeTree,
+      loadingDBTree,
+      treeDoesNotExist,
+      changeDBTree
+    }),
+    [dbTree, loadingDBTree, treeDoesNotExist]
+  )
 }

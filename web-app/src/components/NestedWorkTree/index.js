@@ -131,24 +131,28 @@ const NestedWorkTree = ({
           />
         )}
       </svg>
-      {inEditMode && !isRoot && (
+      {inEditMode && (
         <>
-          <AddSquare
-            onClick={() => onAddChild("left")}
-            style={{
-              position: "absolute",
-              top: 60,
-              left: "calc(50% - 120px)"
-            }}
-          />
-          <AddSquare
-            style={{
-              position: "absolute",
-              top: 60,
-              left: "calc(50% + 70px)"
-            }}
-            onClick={() => onAddChild("right")}
-          />
+          {!isRoot && (
+            <>
+              <AddSquare
+                onClick={() => onAddChild("left")}
+                style={{
+                  position: "absolute",
+                  top: 60,
+                  left: "calc(50% - 120px)"
+                }}
+              />
+              <AddSquare
+                style={{
+                  position: "absolute",
+                  top: 60,
+                  left: "calc(50% + 70px)"
+                }}
+                onClick={() => onAddChild("right")}
+              />
+            </>
+          )}
           {(nestedTree.children || []).length === 0 && (
             <AddSquare
               style={{

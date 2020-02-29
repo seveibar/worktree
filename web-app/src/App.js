@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useMemo, useCallback } from "react"
 import useAPI, { APIProvider } from "./hooks/use-api.js"
 import useToast from "./hooks/use-toast.js"
 import useAccount from "./hooks/use-account.js"
@@ -9,6 +9,7 @@ import Page from "./components/Page"
 import NoTree from "./components/NoTree"
 import NestedWorkTree from "./components/NestedWorkTree"
 import LoadingScreen from "./components/LoadingScreen"
+import getNestedTreeMutators from "./methods/get-nested-tree-mutators"
 import { exampleTree } from "./components/NestedWorkTree/index.stories.js"
 const emptyObj = {}
 
@@ -47,6 +48,15 @@ function App() {
     loadingNestedTree,
     treeDoesNotExist
   } = useNestedTree(window.location.pathname, treeState)
+
+  const nestedTreeMutators = useMemo(
+    () => getNestedTreeMutators(nestedTree, changeNestedTree),
+    [nestedTree, changeNestedTree]
+  )
+
+  const onChangeMeter = useCallback(() => {}, [])
+  const onUnlockTree = useCallback(() => {}, [])
+
   const meters = useMeters()
 
   return (
@@ -59,7 +69,8 @@ function App() {
       id={dbTree ? dbTree.tree_key : "..."}
       treeOwnerName={dbTree ? dbTree.owner_name : "..."}
       onCreateNew={() => null}
-      onClickEdit={() => changeEditMode(true)}
+      onClickToggleEdit={() => changeEditMode(!inEditMode)}
+      inEditMode={inEditMode}
       currentUserAccountName={account.account_name}
     >
       {loadingNestedTree ? (
@@ -79,12 +90,11 @@ function App() {
         <div style={{ paddingTop: 20 }}>
           <NestedWorkTree
             inEditMode={inEditMode}
-            onChangeFlatTree={() => null}
-            onChangeMeter={() => null}
-            onUnlockTree={() => null}
-            onDeleteTree={() => null}
             nestedTree={nestedTree}
+            onChangeMeter={onChangeMeter}
+            onUnlockTree={onUnlockTree}
             meters={meters}
+            {...nestedTreeMutators}
           />
         </div>
       )}
