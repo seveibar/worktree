@@ -6,7 +6,7 @@ The work tree can be customized to your workflow and you can use a slew of commu
 
 ## Building a Work Tree
 
-**Every new user's workspace should begin with "Master Work Tree" tree**. This will keep you on track to finish your "real" work trees.
+**Every new user's workspace should begin with the ["Getting Started"](https://worktree.sh/seveibar/getting-started) tree**. This will keep you on track to finish your "real" work trees.
 
 A work tree is composed of "meters". Meters measure something, such as number of code commits, number of posts, or website traffic. Automatic meters are meters that automatically update their progress for you, **always use automated meters if you can.** Some meters are a checkbox (e.g. "Attend a Code Conference").
 
