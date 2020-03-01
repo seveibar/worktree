@@ -40,13 +40,12 @@ export const APIProvider = ({ children }) => {
   const authenticate = accountId => changeAccountId(accountId)
   const unauthenticate = () => changeAccountId("")
 
-  return (
-    <APIContext.Provider
-      value={{ onRequest, accountId, wait, authenticate, unauthenticate }}
-    >
-      {children}
-    </APIContext.Provider>
+  const v = useMemo(
+    () => ({ onRequest, accountId, wait, authenticate, unauthenticate }),
+    [accountId]
   )
+
+  return <APIContext.Provider value={v}>{children}</APIContext.Provider>
 }
 
 export default () => {

@@ -27,13 +27,13 @@ function App() {
   }
 
   if (route === "/") {
-    return <HomePage />
+    return <HomePage onChangeRoute={changeRoute} />
   } else if (route === "/meters") {
-    return <MeterPage />
+    return <MeterPage onChangeRoute={changeRoute} />
   } else if (route === "/account") {
-    return <AccountPage />
+    return <AccountPage onChangeRoute={changeRoute} />
   } else if (route === "/legal") {
-    return <TermsPage />
+    return <TermsPage onChangeRoute={changeRoute} />
   }
 
   return <TreePage route={route} onChangeRoute={changeRoute} />

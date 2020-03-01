@@ -33,10 +33,16 @@ export default (treePath, treeState) => {
   useEffect(() => {
     if (loadingDBTree || treeDoesNotExist) return
     // Don't reload the same tree to avoid "useless" updates
-    if (nestedTreePath === dbTree.tree_path) return
+    if (nestedTree && nestedTreePath === dbTree.tree_path) return
     changeNestedTreeState(convertToNestedTree(dbTree.tree_def))
     changeNestedTreePath(treePath)
   }, [dbTree, loadingDBTree, treePath])
+
+  console.log({
+    treeDoesNotExist,
+    loadingDBTree,
+    nestedTree: Boolean(nestedTree)
+  })
 
   const loadingNestedTree = !treeDoesNotExist && (loadingDBTree || !nestedTree)
 

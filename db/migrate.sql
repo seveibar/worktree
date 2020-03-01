@@ -137,7 +137,9 @@ IF (db_version=0) THEN
       endpoint_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
       endpoint_name text NOT NULL,
       endpoint_key text NOT NULL,
-      endpoint_def jsonb NOT NULL,
+      endpoint_options jsonb,
+      endpoint_url text,
+      official boolean NOT NULL DEFAULT FALSE,
       owner_account_id uuid references account,
       public boolean NOT NULL DEFAULT FALSE,
       created_at timestamptz NOT NULL DEFAULT current_timestamp
@@ -148,7 +150,9 @@ IF (db_version=0) THEN
       account_id uuid references account NOT NULL,
       endpoint_id uuid references endpoint NOT NULL,
       params jsonb NOT NULL DEFAULT '{}',
+      run_frequency_secs integer NOT NULL DEFAULT 300,
       error text,
+      last_run_at timestamptz NOT NULL DEFAULT current_timestamp,
       created_at timestamptz NOT NULL DEFAULT current_timestamp
     );
     
@@ -197,6 +201,9 @@ IF (db_version=0) THEN
       (
         SELECT tree_key FROM tree WHERE tree.tree_id=account_tree.tree_id
       ) as tree_key,
+      (
+        SELECT tree_name FROM tree WHERE tree.tree_id=account_tree.tree_id
+      ) as tree_name,
       (
         SELECT account_name || '/' || (
           SELECT tree_key FROM tree WHERE tree.tree_id=account_tree.tree_id

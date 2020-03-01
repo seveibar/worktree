@@ -17,7 +17,7 @@ export const AccountProvider = ({ children }) => {
       const {
         data: [account]
       } = await api.get(`account?account_id=eq.${api.accountId}`)
-      if (!account) api.unauthenticate()
+      if (!account) return api.unauthenticate()
       account.reload = () => changeAccount(null)
       changeAccount(account)
     }

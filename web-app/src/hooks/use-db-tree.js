@@ -10,7 +10,10 @@ export default treePath => {
   const [dbTree, changeTree] = useState()
 
   useEffect(() => {
+    if (!api.accountId) return
     if (!treePath) return
+    changeLoadingDBTree(true)
+    changeTreeDoesNotExist(false)
     async function callAPI() {
       const { data } = await api.get(
         `tree?tree_path=eq.${encodeURIComponent(treePath)}`
@@ -23,7 +26,7 @@ export default treePath => {
       changeLoadingDBTree(false)
     }
     callAPI()
-  }, [treePath])
+  }, [treePath, api.accountId])
 
   const changeDBTree = useCallback(
     async changes => {

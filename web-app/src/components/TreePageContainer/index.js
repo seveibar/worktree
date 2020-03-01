@@ -199,7 +199,9 @@ export default ({
           >
             {visibility}
           </ClickableText>
-          <ClickableText onClick={onClone}>clone</ClickableText>
+          {currentUserAccountName !== treeOwnerName && (
+            <ClickableText onClick={onClone}>clone</ClickableText>
+          )}
         </Details>
         <Details>
           <ClickableText onClick={() => changeExtendMode(!extendMode)}>
