@@ -187,8 +187,33 @@ IF (db_version=0) THEN
       (
         SELECT account_name FROM account
           WHERE account.account_id=owner_id
-      ) as owner_name
+      ) as owner_name,
+      (
+        SELECT
+          jsonb_object_agg(
+            requirements.meter_key,
+            (
+              SELECT jsonb_build_object(
+                'meter_name', meter.meter_name,
+                'meter_key', meter.meter_key,
+                'endpoint_name', meter.endpoint_name,
+                'endpoint_id', meter.endpoint_id,
+                'description', meter.description,
+                'output_type', meter.output_type
+              ) FROM meter
+                WHERE meter.meter_key = requirements.meter_key AND meter.account_id = owner_id
+            )
+          )
+        FROM (
+          SELECT
+            jsonb_object_keys(tree_def->tree_names_set.tree_name->'requirements') as meter_key
+          FROM (
+            SELECT jsonb_object_keys(tree.tree_def) as tree_name
+          ) as tree_names_set
+        ) as requirements
+      ) as owner_meter_defs
     FROM tree;
+    
     CREATE VIEW api.account AS SELECT * FROM account;
     CREATE VIEW api.account_tree AS SELECT
       account_tree_id,
@@ -228,7 +253,6 @@ IF (db_version=0) THEN
     
     GRANT ALL PRIVILEGES ON SCHEMA public TO api_user;
     GRANT ALL ON ALL TABLES IN SCHEMA public TO api_user;
-    GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO api_user;
     GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO api_user;
     
 

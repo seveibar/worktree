@@ -1,0 +1,19 @@
+{
+  "builds": [{ "use": "@now/static-build", "src": "web-app/package.json" }],
+  "routes": [
+    {
+      "src": "/api/db/meter",
+      "methods": ["POST"],
+      "headers": {
+        "Prefer": "resolution=merge-duplicates,return=representation"
+      },
+      "continue": true
+    },
+    { "src": "/api/db/(.*)", "dest": "http://localhost:3002/$1" },
+    { "src": "/static/(.*)", "dest": "/web-app/build/static/$1" },
+    { "src": "^/", "dest": "/web-app/build/index.html" },
+    { "src": "/([^.])*", "dest": "/web-app/build/index.html" },
+    { "src": "/(.*)", "dest": "/web-app/build/$1" },
+    { "handle": "filesystem" }
+  ]
+}

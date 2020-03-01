@@ -3,6 +3,10 @@ const fs = require("fs")
 
 console.log("beginning migration")
 console.log("connecting to db...")
+if (process.env.PROD === "TRUE") {
+  console.log("loading .env file...")
+  require("dotenv").config({ path: "../.env" })
+}
 getDB({ migrate: false, seed: false }).then(db => {
   console.log("connected to db")
   console.log("attempting to apply migration...")

@@ -6,7 +6,10 @@
   "scripts": {
     "build": "qspg compile migrations > migrate.sql && mkdir -p build && babel index.js > build/index.js",
     "reset": "npm run build && psql -h localhost -U postgres -c \"DROP DATABASE worktree\" && node migrate.js",
-    "test": "ava tests/**/*.test.js"
+    "test": "ava tests/**/*.test.js",
+    "migrate": "node migrate.js",
+    "migrate:prod": "PROD=TRUE node migrate.js",
+    "reset:prod": "yn && dotenv cross-var PGPASSWORD=%POSTRES_PASS% psql -h %POSTGRES_HOST% -U %POSTGRES_USER% PROD=TRUE node migrate.js"
   },
   "author": "Severin Ibarluzea (@seveibar)",
   "devDependencies": {
@@ -16,6 +19,7 @@
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.6",
     "babel-plugin-macros": "^2.8.0",
+    "dotenv": "^8.2.0",
     "knex": "^0.20.10",
     "qspg": "^1.0.10",
     "raw.macro": "^0.3.0"

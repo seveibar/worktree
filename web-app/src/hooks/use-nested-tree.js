@@ -38,12 +38,6 @@ export default (treePath, treeState) => {
     changeNestedTreePath(treePath)
   }, [dbTree, loadingDBTree, treePath])
 
-  console.log({
-    treeDoesNotExist,
-    loadingDBTree,
-    nestedTree: Boolean(nestedTree)
-  })
-
   const loadingNestedTree = !treeDoesNotExist && (loadingDBTree || !nestedTree)
 
   return useMemo(
