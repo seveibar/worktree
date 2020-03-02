@@ -23,7 +23,11 @@ export default (nestedTree, changeNestedTree, treeState, changeTreeState) => {
         typeof flatTreePath === "string"
           ? nestedSubTreePath
           : nestedSubTreePath.concat(flatTreePath.slice(1))
-      const newNestedTree = setIn(nestedTree, newNestedSubTreePath, newValue)
+
+      const newNestedTree =
+        newNestedSubTreePath.length > 0
+          ? setIn(nestedTree, newNestedSubTreePath, newValue)
+          : newValue
 
       changeNestedTree(newNestedTree)
 

@@ -30,7 +30,7 @@ export const AccountProvider = ({ children }) => {
     if (window.attemptedAccountCreation) return
     window.attemptedAccountCreation = true
     async function createAccount() {
-      const response = await api.post("/api/create-account")
+      const response = await api.post("/api/create-account.js")
       api.authenticate(response.data.account_id, response.data.default_api_key)
     }
     createAccount()

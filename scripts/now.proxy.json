@@ -1,6 +1,11 @@
 {
   "public": false,
-  "builds": [],
+  "builds": [
+    {
+      "use": "@now/node",
+      "src": "api/*.js"
+    }
+  ],
   "routes": [
     {
       "src": "/api/db/meter",

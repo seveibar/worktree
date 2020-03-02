@@ -7,6 +7,10 @@
       "config": {
         "distDir": "build"
       }
+    },
+    {
+      "use": "@now/node",
+      "src": "api/*.js"
     }
   ],
   "routes": [
