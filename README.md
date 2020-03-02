@@ -2,7 +2,9 @@
 
 Work tree is a way of understanding the work you're doing and where it's leading you by providing an interactive tree where items are unlocked as you complete work.
 
-The work tree can be customized to your workflow and you can use a slew of community built "meters" that measure your work across code editors, websites, and more.
+Each work tree can be created/customized for your workflow and you can use a slew of community built "meters" that measure your work across code editors, websites, and more.
+
+![worktree screenshot](https://user-images.githubusercontent.com/1910070/75652962-733d4b00-5c2a-11ea-80b9-cadbe499160c.png)
 
 ## Building a Work Tree
 
