@@ -58,13 +58,14 @@ CREATE TRIGGER create_new_account_api_key_trigger
 CREATE TABLE tree (
   tree_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
   tree_num serial NOT NULL UNIQUE,
-  tree_name text NOT NULL UNIQUE,
-  tree_key text NOT NULL UNIQUE,
+  tree_name text,
+  tree_key text,
   owner_id uuid references account NOT NULL,
   tree_def jsonb NOT NULL,
   public boolean NOT NULL DEFAULT FALSE,
   last_modified_at timestamptz NOT NULL DEFAULT current_timestamp,
-  created_at timestamptz NOT NULL DEFAULT current_timestamp
+  created_at timestamptz NOT NULL DEFAULT current_timestamp,
+  UNIQUE(owner_id, tree_key)
 );
 
 CREATE OR REPLACE FUNCTION change_last_modified()
