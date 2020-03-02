@@ -2,7 +2,9 @@
   "name": "worktree",
   "version": "1.0.0",
   "description": "Work tree is a way of understanding the work you're doing and where it's leading you by providing an interactive tree where items are unlocked as you complete work.",
-  "dependencies": {},
+  "dependencies": {
+    "micro": "^9.3.4"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

@@ -11,7 +11,8 @@ const getConnectionInfo = (database, user) => ({
   port: process.env.POSTGRES_PORT || 5432,
   password: process.env.POSTGRES_PASS || "",
   database,
-  ssl: Boolean(process.env.POSTGRES_SSL)
+  ssl: Boolean(process.env.POSTGRES_SSL),
+  rejectUnauthorized: false
 })
 
 const createDatabase = async dbName => {

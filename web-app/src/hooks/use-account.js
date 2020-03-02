@@ -27,15 +27,11 @@ export const AccountProvider = ({ children }) => {
   // Create account if it doesn't exist
   useEffect(() => {
     if (api.accountId) return
+    if (window.attemptedAccountCreation) return
+    window.attemptedAccountCreation = true
     async function createAccount() {
-      const response = await api.post(
-        "account",
-        {},
-        { headers: { Prefer: "return=representation" } }
-      )
-      if (response.data.length !== 1)
-        return toast.error("Couldn't create account")
-      api.authenticate(response.data[0].account_id)
+      const response = await api.post("/api/create-account")
+      api.authenticate(response.data.account_id, response.data.default_api_key)
     }
     createAccount()
     return () => {}

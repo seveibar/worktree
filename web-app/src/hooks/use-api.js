@@ -29,16 +29,32 @@ const APIContext = createContext({
 
 export const APIProvider = ({ children }) => {
   let [accountId, changeAccountId] = useLocalStorage("account_id", "")
+  let [apiKey, changeAPIKey] = useLocalStorage("api_key", "")
 
   // TODO serialize requests
-  const onRequest = (...args) =>
-    axios[args[0]](
+  const onRequest = (...args) => {
+    if (args[0] === "get") {
+      if (!args[2]) args[2] = {}
+      args[2] = { ...args[2], headers: { ...args[2].headers, apikey: apiKey } }
+    } else {
+      if (!args[2]) args[2] = {}
+      if (!args[3]) args[3] = {}
+      args[3] = { ...args[3], headers: { ...args[3].headers, apikey: apiKey } }
+    }
+    return axios[args[0]](
       args[1].startsWith("/") ? args[1] : `/api/db/${args[1]}`,
       ...args.slice(2)
     )
+  }
   const wait = () => Promise.resolve()
-  const authenticate = accountId => changeAccountId(accountId)
-  const unauthenticate = () => changeAccountId("")
+  const authenticate = (newAccountId, newAPIKey) => {
+    changeAPIKey(newAPIKey)
+    changeAccountId(newAccountId)
+  }
+  const unauthenticate = () => {
+    changeAPIKey("")
+    changeAccountId("")
+  }
 
   const v = useMemo(
     () => ({ onRequest, accountId, wait, authenticate, unauthenticate }),

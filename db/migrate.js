@@ -5,7 +5,7 @@ console.log("beginning migration")
 console.log("connecting to db...")
 if (process.env.PROD === "TRUE") {
   console.log("loading .env file...")
-  require("dotenv").config({ path: "../.env" })
+  require("dotenv").config({ path: "../.env.prod" })
 }
 getDB({ migrate: false, seed: false }).then(db => {
   console.log("connected to db")

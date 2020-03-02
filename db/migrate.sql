@@ -49,6 +49,7 @@ IF (db_version=0) THEN
       account_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
       account_num serial NOT NULL UNIQUE,
       account_name text NOT NULL UNIQUE,
+      email text UNIQUE,
       auth0_id text,
       last_active_at timestamptz NOT NULL DEFAULT current_timestamp,
       created_at timestamptz NOT NULL DEFAULT current_timestamp
@@ -249,6 +250,7 @@ IF (db_version=0) THEN
     FROM tree;
     
     CREATE VIEW api.account AS SELECT * FROM account;
+    
     CREATE VIEW api.account_tree AS SELECT
       account_tree_id,
       account_id,

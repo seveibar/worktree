@@ -19,6 +19,7 @@
       "continue": true
     },
     { "src": "/api/db/(.*)", "dest": "http://localhost:3002/$1" },
+    { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/static/(.*)", "dest": "/web-app/static/$1" },
     { "src": "^/", "dest": "/web-app/index.html" },
     { "src": "/([^.])*", "dest": "/web-app/index.html" },
