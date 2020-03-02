@@ -4,6 +4,8 @@ Work tree is a way of understanding the work you're doing and where it's leading
 
 The work tree can be customized to your workflow and you can use a slew of community built "meters" that measure your work across code editors, websites, and more.
 
+![worktree screenshot](https://user-images.githubusercontent.com/1910070/75652962-733d4b00-5c2a-11ea-80b9-cadbe499160c.png)
+
 ## Building a Work Tree
 
 **Every new user's workspace should begin with the ["Getting Started"](https://worktree.sh/seveibar/getting-started) tree**. This will keep you on track to finish your "real" work trees.
