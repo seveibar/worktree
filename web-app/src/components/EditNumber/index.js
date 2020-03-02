@@ -70,6 +70,7 @@ export default ({
   adderDistance,
   ...props
 }) => {
+  value = value || 0
   const containerRef = useRef()
   const numberContainerRef = useRef()
   const [open, changeOpen] = useState(false)

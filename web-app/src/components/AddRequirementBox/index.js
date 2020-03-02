@@ -179,7 +179,11 @@ export default ({ baseColor = colors.blue, meters, onAdd, onChangeMeter }) => {
   const [newCategoryName, changeNewCategoryName] = useState("")
 
   const meterCategories = Array.from(
-    new Set(Object.values(meters).map(m => m.endpointName))
+    new Set(
+      Object.values(meters)
+        .filter(Boolean)
+        .map(m => m.endpointName)
+    )
   )
 
   useEffect(() => {
@@ -228,9 +232,9 @@ export default ({ baseColor = colors.blue, meters, onAdd, onChangeMeter }) => {
     close()
   }
 
-  const selectedCategoryMeters = Object.values(meters).filter(
-    m => m.endpointName === selectedCategory
-  )
+  const selectedCategoryMeters = Object.values(meters)
+    .filter(Boolean)
+    .filter(m => m.endpointName === selectedCategory)
 
   return (
     <Container
