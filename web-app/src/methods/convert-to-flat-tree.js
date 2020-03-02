@@ -4,6 +4,7 @@ export const convertToFlatTree = (
   parent = null,
   order = 0
 ) => {
+  if (!nestedTree || nestedTree.name === "") return
   agg[nestedTree.name] = { ...nestedTree }
   if (parent) agg[nestedTree.name].parent = parent
   agg[nestedTree.name].order = order
