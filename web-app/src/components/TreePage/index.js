@@ -22,6 +22,11 @@ import getNestedTreeWithNestedState from "../../methods/get-nested-tree-with-nes
 import throttle from "lodash/throttle"
 const emptyObj = {}
 
+const onLogOut = () => {
+  window.localStorage.clear()
+  window.location.reload()
+}
+
 export default ({ route, onChangeRoute }) => {
   const api = useAPI()
   const toast = useToast()
@@ -57,7 +62,9 @@ export default ({ route, onChangeRoute }) => {
     [changeDBTree]
   )
 
-  const { meters, onChangeMeter } = useMeters()
+  const { meters, onChangeMeter } = useMeters(
+    dbTree ? dbTree.owner_meter_defs : null
+  )
 
   const onChangeId = useCallback(
     async key => {
@@ -125,6 +132,7 @@ export default ({ route, onChangeRoute }) => {
       title={dbTree && dbTree.tree_name}
       id={dbTree && dbTree.tree_key}
       treeOwnerName={dbTree && dbTree.owner_name}
+      onLogOut={onLogOut}
       onCreateNew={onCreateNew}
       onClickToggleEdit={toggleEditMode}
       onClickHome={onClickHome}

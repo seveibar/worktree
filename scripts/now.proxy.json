@@ -1,0 +1,19 @@
+{
+  "public": false,
+  "builds": [],
+  "routes": [
+    {
+      "src": "/api/db/meter",
+      "methods": ["POST"],
+      "headers": {
+        "Prefer": "resolution=merge-duplicates,return=representation"
+      },
+      "continue": true
+    },
+    { "src": "/api/db/(.*)", "dest": "http://localhost:3002/$1" },
+    { "src": "/static/(.*)", "dest": "http://localhost:3001/$1" },
+    { "src": "^/", "dest": "http://localhost:3001/index.html" },
+    { "src": "/([^.])*", "dest": "http://localhost:3001/index.html" },
+    { "src": "/(.*)", "dest": "http://localhost:3001/$1" }
+  ]
+}

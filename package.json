@@ -6,7 +6,8 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "now dev -A now.dev.json",
+    "start": "now dev -A ./scripts/now.dev.json",
+    "start:proxy": "now dev -A ./scripts/now.proxy.json",
     "migratedb": "cd db && npm run migrate:prod",
     "copytoproxy": "cd scripts && ./copy-to-proxy.sh"
   },

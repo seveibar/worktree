@@ -1,7 +1,7 @@
 import { useMemo, useState, useReducer, useEffect, useCallback } from "react"
 import useAPI from "./use-api"
 
-export default () => {
+export default ownerMeters => {
   const api = useAPI()
   const [meters, changeMeters] = useReducer(
     (state, action) => ({ ...state, ...action }),
@@ -53,9 +53,9 @@ export default () => {
 
   return useMemo(
     () => ({
-      meters,
+      meters: { ...ownerMeters, ...meters },
       onChangeMeter
     }),
-    [meters, onChangeMeter]
+    [meters, onChangeMeter, ownerMeters]
   )
 }

@@ -21,6 +21,7 @@
     "seamless-immutable": "^7.1.4"
   },
   "scripts": {
+    "dev": "npm run start",
     "start": "PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

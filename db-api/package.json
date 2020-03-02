@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "PGRST_DB_URI=postgres://postgres@localhost:5432/worktree postgrest postgrest.conf",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "reset": "cd ../db && npm run reset"
   },
   "author": "Severin Ibarluzea (@seveibar)"
 }
