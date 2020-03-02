@@ -4,10 +4,12 @@ const getDB = require("../")
 test("should load an unowned public tree", async t => {
   const db = await getDB({ migrate: true, testMode: true, seed: true })
 
-  const tree = await db("api.tree")
-    .where({ tree_path: "user_1/test_tree" })
-    .first()
-  console.log(tree)
+  await db.raw("SET ROLE api_user")
+  await db.raw("SELECT set_config('request.header.apikey', 'KEY1', FALSE)")
+
+  const accounts = await db("api.account")
+
+  t.assert(accounts.length === 1)
 
   await db.destroy()
 })

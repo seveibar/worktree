@@ -7,6 +7,8 @@ END IF;
 GRANT api_user to postgres;
 
 CREATE SCHEMA api;
+CREATE SCHEMA super_api;
+ALTER SCHEMA api OWNER TO api_user;
 
 CREATE TABLE account (
   account_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -39,6 +41,18 @@ CREATE TABLE account_api_key (
   last_used_at timestamptz NOT NULL DEFAULT current_timestamp,
   created_at timestamptz NOT NULL DEFAULT current_timestamp
 );
+
+CREATE OR REPLACE FUNCTION create_new_account_api_key()
+  RETURNS trigger AS $TRIG$
+  BEGIN
+    INSERT INTO account_api_key (account_id, purpose) VALUES (NEW.account_id, 'Default');
+    RETURN NULL;
+  END
+  $TRIG$ LANGUAGE plpgsql;
+
+CREATE TRIGGER create_new_account_api_key_trigger
+  AFTER INSERT ON account
+  FOR EACH ROW EXECUTE PROCEDURE create_new_account_api_key();
 
 CREATE TABLE tree (
   tree_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -135,6 +149,26 @@ CREATE TABLE meter (
   created_at timestamptz NOT NULL DEFAULT current_timestamp
 );
 
+CREATE OR REPLACE FUNCTION meter_limit_checker()
+  RETURNS trigger AS $TRIG$
+  BEGIN
+    IF (
+      SELECT COUNT(*) FROM meter WHERE meter.account_id = NEW.account_id
+    ) >= 1000 THEN
+      RAISE EXCEPTION 'You can only have 1,000 meters!';
+    END IF;
+    RETURN NEW;
+  END
+  $TRIG$ LANGUAGE plpgsql;
+
+CREATE TRIGGER meter_limit_checker_trigger
+  BEFORE INSERT ON meter
+  FOR EACH ROW EXECUTE PROCEDURE meter_limit_checker();
+
+CREATE VIEW super_api.account_api_key AS SELECT * FROM account_api_key;
+CREATE VIEW super_api.account AS SELECT * FROM account;
+CREATE VIEW super_api.meter AS SELECT * FROM meter;
+
 CREATE VIEW api.meter AS SELECT * FROM meter;
 CREATE VIEW api.tree AS SELECT
   tree_id,
@@ -146,11 +180,11 @@ CREATE VIEW api.tree AS SELECT
   last_modified_at,
   created_at,
   (
-    SELECT account_name || '/' || tree_key FROM account
+    SELECT account_name || '/' || tree_key FROM super_api.account
       WHERE account.account_id=owner_id
   ) as tree_path,
   (
-    SELECT account_name FROM account
+    SELECT account_name FROM super_api.account
       WHERE account.account_id=owner_id
   ) as owner_name,
   (
@@ -165,7 +199,7 @@ CREATE VIEW api.tree AS SELECT
             'endpoint_id', meter.endpoint_id,
             'description', meter.description,
             'output_type', meter.output_type
-          ) FROM meter
+          ) FROM super_api.meter
             WHERE meter.meter_key = requirements.meter_key AND meter.account_id = owner_id
         )
       )
@@ -212,6 +246,7 @@ ALTER VIEW api.account_tree OWNER TO api_user;
 ALTER VIEW api.account_api_key OWNER TO api_user;
 ALTER VIEW api.account_endpoint OWNER TO api_user;
 ALTER VIEW api.endpoint OWNER TO api_user;
+ALTER VIEW api.account_api_key OWNER TO api_user;
 
 GRANT ALL PRIVILEGES ON SCHEMA api TO api_user;
 GRANT ALL ON ALL TABLES IN SCHEMA api TO api_user;
@@ -219,3 +254,66 @@ GRANT ALL ON ALL TABLES IN SCHEMA api TO api_user;
 GRANT ALL PRIVILEGES ON SCHEMA public TO api_user;
 GRANT ALL ON ALL TABLES IN SCHEMA public TO api_user;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO api_user;
+
+GRANT ALL PRIVILEGES ON SCHEMA super_api TO api_user;
+GRANT SELECT ON super_api.account_api_key TO api_user;
+GRANT SELECT ON super_api.account TO api_user;
+GRANT SELECT ON super_api.meter TO api_user;
+
+ALTER TABLE meter ENABLE ROW LEVEL SECURITY;
+ALTER TABLE account ENABLE ROW LEVEL SECURITY;
+ALTER TABLE account_tree ENABLE ROW LEVEL SECURITY;
+ALTER TABLE endpoint ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tree ENABLE ROW LEVEL SECURITY;
+ALTER TABLE account_endpoint ENABLE ROW LEVEL SECURITY;
+ALTER TABLE account_api_key ENABLE ROW LEVEL SECURITY;
+
+CREATE FUNCTION auth_account_id() RETURNS uuid as $BODY$
+  DECLARE account_id uuid;
+  BEGIN
+    account_id := (
+      SELECT account_api_key.account_id
+        FROM super_api.account_api_key
+        WHERE key_string=current_setting('request.header.apikey', 't')
+    );
+    RETURN account_id;
+  END
+$BODY$ LANGUAGE plpgsql;
+
+CREATE POLICY account_access ON account FOR ALL TO api_user
+  USING (
+    account.account_id=auth_account_id()
+  );
+
+CREATE POLICY tree_access ON tree FOR ALL TO api_user
+  USING (
+    tree.public OR
+    tree.owner_id=auth_account_id()
+  );
+
+CREATE POLICY meter_access ON meter FOR ALL TO api_user
+  USING (
+    meter.account_id=auth_account_id()
+  );
+
+CREATE POLICY account_tree_access ON account_tree FOR ALL TO api_user
+  USING (
+    account_tree.account_id=auth_account_id()
+  );
+
+CREATE POLICY endpoint_access ON endpoint FOR ALL TO api_user
+  USING (
+    endpoint.official OR
+    endpoint.public OR
+    endpoint.owner_account_id=auth_account_id()
+  );
+
+CREATE POLICY account_endpoint_access ON account_endpoint FOR ALL TO api_user
+  USING (
+    account_endpoint.account_id=auth_account_id()
+  );
+
+CREATE POLICY account_api_key_access ON account_api_key FOR ALL TO api_user
+  USING (
+    account_api_key.account_id=auth_account_id()
+  );

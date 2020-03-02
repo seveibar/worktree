@@ -8,8 +8,7 @@
     "reset": "npm run build && psql -h localhost -U postgres -c \"DROP DATABASE worktree\" && node migrate.js",
     "test": "ava tests/**/*.test.js",
     "migrate": "node migrate.js",
-    "migrate:prod": "PROD=TRUE node migrate.js",
-    "reset:prod": "yn && dotenv cross-var PGPASSWORD=%POSTRES_PASS% psql -h %POSTGRES_HOST% -U %POSTGRES_USER% PROD=TRUE node migrate.js"
+    "migrate:prod": "PROD=TRUE node migrate.js"
   },
   "author": "Severin Ibarluzea (@seveibar)",
   "devDependencies": {

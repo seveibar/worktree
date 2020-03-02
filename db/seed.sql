@@ -2,6 +2,16 @@ INSERT INTO account DEFAULT VALUES;
 INSERT INTO account DEFAULT VALUES;
 INSERT INTO account DEFAULT VALUES;
 
+UPDATE account_api_key SET key_string='KEY1' WHERE account_id=(
+  SELECT account_id FROM account WHERE account_name='user_1'
+);
+UPDATE account_api_key SET key_string='KEY2' WHERE account_id=(
+  SELECT account_id FROM account WHERE account_name='user_2'
+);
+UPDATE account_api_key SET key_string='KEY3' WHERE account_id=(
+  SELECT account_id FROM account WHERE account_name='user_3'
+);
+
 INSERT INTO tree (tree_name, tree_key, owner_id, tree_def)
   SELECT
     'Test Tree',
