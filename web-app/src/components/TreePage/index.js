@@ -30,10 +30,6 @@ const onLogOut = () => {
 export default ({ route, onChangeRoute }) => {
   const api = useAPI()
   const toast = useToast()
-  const [inEditMode, toggleEditMode] = useReducer(
-    inEditMode => !inEditMode,
-    false
-  )
 
   const account = useAccount() || emptyObj
   const [treeState, changeTreeState] = useTreeState(route)
@@ -45,6 +41,17 @@ export default ({ route, onChangeRoute }) => {
     treeDoesNotExist,
     changeDBTree
   } = useNestedTree(route, treeState)
+
+  const [inEditMode, toggleEditMode] = useReducer(inEditMode => {
+    if (!dbTree) return false
+    if (!inEditMode && dbTree.owner_id !== api.accountId) {
+      toast.error(
+        "This tree doesn't belong to you, you have to clone it before you can edit it!"
+      )
+      return false
+    }
+    return !inEditMode
+  }, false)
 
   const nestedTreeMutators = useMemo(
     () =>
