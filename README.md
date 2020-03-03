@@ -1,6 +1,6 @@
 # Work Tree
 
-Work tree is a way of understanding the work you're doing and where it's leading you by providing an interactive tree where items are unlocked as you complete work.
+Work tree is a way of understanding the work you're doing and where it's leading you by providing an interactive tree where items are unlocked as you complete work. [You can use work tree online at worktree.sh](https://worktree.sh)
 
 Each work tree can be created/customized for your workflow and you can use a slew of community built "meters" that measure your work across code editors, websites, and more.
 
