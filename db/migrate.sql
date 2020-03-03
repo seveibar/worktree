@@ -93,13 +93,14 @@ IF (db_version=0) THEN
     CREATE TABLE tree (
       tree_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
       tree_num serial NOT NULL UNIQUE,
-      tree_name text NOT NULL UNIQUE,
-      tree_key text NOT NULL UNIQUE,
+      tree_name text,
+      tree_key text,
       owner_id uuid references account NOT NULL,
       tree_def jsonb NOT NULL,
       public boolean NOT NULL DEFAULT FALSE,
       last_modified_at timestamptz NOT NULL DEFAULT current_timestamp,
-      created_at timestamptz NOT NULL DEFAULT current_timestamp
+      created_at timestamptz NOT NULL DEFAULT current_timestamp,
+      UNIQUE(owner_id, tree_key)
     );
     
     CREATE OR REPLACE FUNCTION change_last_modified()
@@ -182,7 +183,8 @@ IF (db_version=0) THEN
       output_type text NOT NULL,
       output jsonb,
       last_modified_at timestamptz NOT NULL DEFAULT current_timestamp,
-      created_at timestamptz NOT NULL DEFAULT current_timestamp
+      created_at timestamptz NOT NULL DEFAULT current_timestamp,
+      UNIQUE(account_id, meter_key)
     );
     
     CREATE OR REPLACE FUNCTION meter_limit_checker()
@@ -206,6 +208,7 @@ IF (db_version=0) THEN
     CREATE VIEW super_api.meter AS SELECT * FROM meter;
     
     CREATE VIEW api.meter AS SELECT * FROM meter;
+    
     CREATE VIEW api.tree AS SELECT
       tree_id,
       tree_name,

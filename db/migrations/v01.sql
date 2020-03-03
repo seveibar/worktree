@@ -148,7 +148,8 @@ CREATE TABLE meter (
   output_type text NOT NULL,
   output jsonb,
   last_modified_at timestamptz NOT NULL DEFAULT current_timestamp,
-  created_at timestamptz NOT NULL DEFAULT current_timestamp
+  created_at timestamptz NOT NULL DEFAULT current_timestamp,
+  UNIQUE(account_id, meter_key)
 );
 
 CREATE OR REPLACE FUNCTION meter_limit_checker()

@@ -16,6 +16,7 @@
   "routes": [
     {
       "src": "/api/db/meter",
+      "dest": "/api/db/meter?on_conflict=account_id,meter_key",
       "methods": ["POST"],
       "headers": {
         "Prefer": "resolution=merge-duplicates,return=representation"

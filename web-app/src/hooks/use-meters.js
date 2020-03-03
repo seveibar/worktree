@@ -2,6 +2,7 @@ import { useMemo, useState, useReducer, useEffect, useCallback } from "react"
 import useAPI from "./use-api"
 
 const convertDBMeter = meter => ({
+  meter_id: meter.meter_id,
   name: meter.meter_name,
   meterKey: meter.meter_key,
   endpointName: meter.endpoint_name,
@@ -20,6 +21,7 @@ export default ownerMeters => {
   const onChangeMeter = useCallback(
     async meter => {
       const changes = {
+        meter_id: meter.meter_id,
         meter_name: meter.name,
         meter_key: meter.meterKey || meter.key,
         endpoint_name: meter.endpointName,
@@ -32,10 +34,16 @@ export default ownerMeters => {
         key => changes[key] === undefined && delete changes[key]
       )
       changeMeters({ [changes.meter_key]: meter })
-      const response = await api.post(
+      const response = await api[!changes.meter_id ? "post" : "patch"](
         `meter?meter_key=eq.${meter.meterKey}`,
-        changes
+        changes,
+        { headers: { Prefer: "return=representation" } }
       )
+      if (!changes.meter_id) {
+        changeMeters({
+          [changes.meter_key]: { ...meter, meter_id: response.data[0].meter_id }
+        })
+      }
     },
     [api]
   )
