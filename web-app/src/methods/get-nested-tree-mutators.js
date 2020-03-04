@@ -6,6 +6,7 @@ import getNestedTreePath from "./get-nested-tree-path.js"
 export default (nestedTree, changeNestedTree, treeState, changeTreeState) => {
   return {
     onChangeFlatTree: (flatTreePath, newValue) => {
+      if (!flatTreePath) return
       const subTreeName =
         typeof flatTreePath === "string" ? flatTreePath : flatTreePath[0]
       const nestedSubTreePath = getNestedTreePath(nestedTree, subTreeName)
@@ -14,7 +15,9 @@ export default (nestedTree, changeNestedTree, treeState, changeTreeState) => {
       if (typeof flatTreePath === "string") {
         newValueisSubTree = true
         newValue = {
-          ...getIn(nestedTree, nestedSubTreePath),
+          ...(nestedSubTreePath.length > 0
+            ? getIn(nestedTree, nestedSubTreePath)
+            : nestedTree),
           ...newValue
         }
       }

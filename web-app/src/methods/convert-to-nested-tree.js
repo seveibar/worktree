@@ -6,7 +6,7 @@ const convertToNestedTree = (flatTree, rootTreeName) => {
   return {
     ...flatTree[rootTreeName],
     children: Object.values(flatTree)
-      .filter(t => t.parent === rootTreeName)
+      .filter(t => t.parent === rootTreeName && t.parent !== undefined)
       .map(t => convertToNestedTree(flatTree, t.name))
       .sort((a, b) => (a.order || 0) - (b.order || 0))
   }

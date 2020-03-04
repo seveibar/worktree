@@ -193,10 +193,11 @@ export default ({
       // Save any changes
       const modifications = {}
       const newName = titleElm.current.innerText
-      if (newName !== name) modifications.name = newName
+      if (newName !== name && newName) modifications.name = newName
 
       const newDescription = descriptionElm.current.innerText
       if (
+        newDescription &&
         newDescription !== description &&
         newDescription !== defaultDescription
       )
@@ -257,7 +258,7 @@ export default ({
           style={{ backgroundColor: color[500] }}
           className={classnames("text", inEditMode && fullyOpen && "editable")}
         >
-          {name}
+          {name || " "}
         </div>
       </Title>
       <DescriptionContainer

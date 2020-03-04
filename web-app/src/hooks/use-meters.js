@@ -33,7 +33,10 @@ export default ownerMeters => {
       Object.keys(changes).forEach(
         key => changes[key] === undefined && delete changes[key]
       )
-      changeMeters({ [changes.meter_key]: meter })
+      const newMeter = { ...meters[changes.meter_key], ...meter }
+      changeMeters({
+        [changes.meter_key]: newMeter
+      })
       const response = await api[!changes.meter_id ? "post" : "patch"](
         `meter?meter_key=eq.${meter.meterKey}`,
         changes,
@@ -41,11 +44,14 @@ export default ownerMeters => {
       )
       if (!changes.meter_id) {
         changeMeters({
-          [changes.meter_key]: { ...meter, meter_id: response.data[0].meter_id }
+          [changes.meter_key]: {
+            ...newMeter,
+            meter_id: response.data[0].meter_id
+          }
         })
       }
     },
-    [api]
+    [api, meters]
   )
 
   useEffect(() => {
