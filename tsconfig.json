@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "esModuleInterop": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "dist",
+    "baseUrl": "./",
+    "paths": {
+      "~/*": ["*"]
+    }
+  },
+  "include": [
+    "server.ts",
+    "api/**/*",
+    "db/**/*",
+    "database.ts",
+    "types.ts",
+    "tests/**/*",
+    "middlewares/**/*"
+  ]
+}

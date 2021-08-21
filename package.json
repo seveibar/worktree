@@ -4,25 +4,30 @@
   "description": "Work tree is a way of understanding the work you're doing and where it's leading you by providing an interactive tree where items are unlocked as you complete work.",
   "dependencies": {
     "dotenv": "^10.0.0",
+    "get-port": "^5.1.1",
     "knex": "^0.20.10",
     "micro": "^9.3.4",
+    "node-fetch": "^2.6.1",
     "node-pg-migrate": "^5.10.0",
     "pg": "^8.7.1",
-    "pgknexlove": "^1.1.8",
+    "pgknexlove": "^1.1.9",
     "postgrest": "^1.2.0",
     "tsc-alias": "^1.3.9",
     "typescript": "^4.3.5"
   },
   "devDependencies": {
+    "ava": "^3.15.0",
     "now": "^21.0.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start:local": "",
+    "test": "ava dist/tests/**/*.test.js",
+    "build": "tsc && tsc-alias",
+    "build:watch": "tsc --watch & tsc-alias --watch",
+    "start:local": "tsc && tsc-alias && node dist/server",
     "start": "now dev -A ./scripts/now.dev.json",
     "start:proxy": "now dev -A ./scripts/now.proxy.json",
-    "db:migrate": "node-pg-migrate up -m db/migrations && pg_dump -h localhost -U postgres -s > db/structure.sql",
-    "db:create-migration": "node-pg-migrate -m db/migrations create",
+    "db:migrate": "node-pg-migrate up --ignore-pattern '.*\\.map|.*\\.ts' -m dist/db/migrations && pg_dump -h localhost -U postgres -s > db/structure.sql",
+    "db:create-migration": "node-pg-migrate -m dist/db/migrations create",
     "copytoproxy": "cd scripts && ./copy-to-proxy.sh"
   },
   "repository": {
