@@ -1,14 +1,10 @@
-// @flow weak
-
 const micro = require("micro")
-const getDB = require("../db")
+const getDB = require("pgknexlove")
 
 let db
 module.exports = async (req, res) => {
   if (!db) db = await getDB()
-  const [accountId] = await db("account")
-    .insert({})
-    .returning("account_id")
+  const [accountId] = await db("account").insert({}).returning("account_id")
 
   const newAccount = await db("account")
     .where({ account_id: accountId })
@@ -21,7 +17,7 @@ module.exports = async (req, res) => {
   res.status(200).end(
     JSON.stringify({
       account_id: newAccount.account_id,
-      default_api_key: newAPIKey.key_string
+      default_api_key: newAPIKey.key_string,
     })
   )
 }
