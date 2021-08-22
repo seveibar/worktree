@@ -4,9 +4,11 @@
   "description": "Work tree is a way of understanding the work you're doing and where it's leading you by providing an interactive tree where items are unlocked as you complete work.",
   "dependencies": {
     "dotenv": "^10.0.0",
+    "fs-router": "^0.5.0",
     "get-port": "^5.1.1",
     "knex": "^0.20.10",
     "micro": "^9.3.4",
+    "micro-morgan": "^0.1.0",
     "node-fetch": "^2.6.1",
     "node-pg-migrate": "^5.10.0",
     "pg": "^8.7.1",
