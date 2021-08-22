@@ -13,7 +13,7 @@ export default async ({ databaseUrl = "" }: { databaseUrl?: string } = {}) => {
     databaseUrl,
     direction: "up",
     schema: "public",
-    ignorePattern: ".*\\.map|.*\\.ts"
+    ignorePattern: ".*\\.map|.*\\.ts",
     dir: path.resolve(__dirname, "./migrations"),
   } as any)
 }

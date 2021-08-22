@@ -23,9 +23,9 @@ async function startServer() {
 
 export default async (req: any, res) => {
   await startServer()
-  const proxyTo = `${postgrestUrl}${req.url.replace(/^\/api/, "")}`
-
-  console.log(req.host, req.body)
+  const proxyTo = `${postgrestUrl}${req.url
+    .replace(/^\/api/, "")
+    .replace(/^\/db/, "")}`
 
   const proxyRes = await fetch(proxyTo, {
     method: req.method,
