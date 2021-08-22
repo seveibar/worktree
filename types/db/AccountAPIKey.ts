@@ -1,7 +1,7 @@
 // @generated
 // Automatically generated. Don't change this file manually.
 
-export type AccountAPIKeyId = string & { " __flavor"?: 'account_api_key' };
+export type AccountAPIKeyId = string & { " __flavor"?: "account_api_key" };
 
 export default interface AccountAPIKey {
   /** Primary key. Index: account_api_key_pkey */

@@ -1,7 +1,7 @@
 // @generated
 // Automatically generated. Don't change this file manually.
 
-export type EndpointId = string & { " __flavor"?: 'endpoint' };
+export type EndpointId = string & { " __flavor"?: "endpoint" };
 
 export default interface Endpoint {
   /** Primary key. Index: endpoint_pkey */

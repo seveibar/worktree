@@ -74,6 +74,18 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@seveibar/kanel@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@seveibar/kanel/-/kanel-2.3.1.tgz#36d4ff136e5bc37e9bd1bcbf83a55094b9469f65"
+  integrity sha512-/qhmQ055UHd18gwq1C6UwkF8Rj5g0CWk1+6/EZAI7SYHs+25FLKmfNUPcIIOaY4YCscZe0L8xlSCbgT6hJtMwA==
+  dependencies:
+    chalk "^4.1.0"
+    extract-pg-schema "^3.1.1"
+    optionator "^0.9.1"
+    pg "^8.6.0"
+    ramda "^0.27.1"
+    rmfr "^2.0.0"
+
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
@@ -1642,18 +1654,6 @@ jsonpath@^1.0.2:
     static-eval "2.0.2"
     underscore "1.12.1"
 
-kanel@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/kanel/-/kanel-2.3.0.tgz#12510c76792ae1e9c5e697ad5b5e4646c44ec339"
-  integrity sha512-CsltszxfYXrz8h6hQactoL+Ow7vGOsM8KkQG7zxAWIpXjCU66M6MzvvMudc5uEInAoxJIj0QgcPI6DZev2Mk1Q==
-  dependencies:
-    chalk "^4.1.0"
-    extract-pg-schema "^3.1.1"
-    optionator "^0.9.1"
-    pg "^8.6.0"
-    ramda "^0.27.1"
-    rmfr "^2.0.0"
-
 keyv@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/keyv/-/keyv-3.1.0.tgz#ecc228486f69991e49e9476485a5be1e8fc5c4d9"
@@ -2292,10 +2292,10 @@ pg@^8.5.1, pg@^8.6.0, pg@^8.7.1:
     pg-types "^2.1.0"
     pgpass "1.x"
 
-pgknexlove@^1.1.12:
-  version "1.1.12"
-  resolved "https://registry.yarnpkg.com/pgknexlove/-/pgknexlove-1.1.12.tgz#86db228c393eb7532e57e4e88fb99c4a4edd4000"
-  integrity sha512-p9nXbsDMVJWDxKnDGYvYBK5I4G6m5MgVZH9mMwmsgeO3Z6sR0/q0ky+MMzyPrubMxVdcMzWr/Ke0dTLxALxnPg==
+pgknexlove@^1.1.13:
+  version "1.1.13"
+  resolved "https://registry.yarnpkg.com/pgknexlove/-/pgknexlove-1.1.13.tgz#d086ae67e90fb2a249f1328b943bfa02d9155d5e"
+  integrity sha512-QrOPJLpL95BHfz8aSxjDOmT0G5y6OVxvBmx14kc03fs5RMswzqvXLEwKLIwVa9rvebriR+O68V3wpy6EJxQayA==
   dependencies:
     knex "^0.95.10"
     pg "^8.5.1"

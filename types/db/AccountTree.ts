@@ -1,7 +1,7 @@
 // @generated
 // Automatically generated. Don't change this file manually.
 
-export type AccountTreeId = string & { " __flavor"?: 'account_tree' };
+export type AccountTreeId = string & { " __flavor"?: "account_tree" };
 
 export default interface AccountTree {
   /** Primary key. Index: account_tree_pkey */

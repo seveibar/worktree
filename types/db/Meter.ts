@@ -1,7 +1,7 @@
 // @generated
 // Automatically generated. Don't change this file manually.
 
-export type MeterId = string & { " __flavor"?: 'meter' };
+export type MeterId = string & { " __flavor"?: "meter" };
 
 export default interface Meter {
   /** Primary key. Index: meter_pkey */

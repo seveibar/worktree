@@ -1,15 +1,10 @@
 const path = require("path")
 const { recase } = require("@kristiandupont/recase")
 const toPascal = recase("snake", "pascal")
+const pgknexlove = require("pgknexlove")
 
 module.exports = {
-  connection: {
-    // TODO use DATABASE_URL env var
-    host: "localhost",
-    user: "postgres",
-    password: "postgres",
-    database: "postgres",
-  },
+  connection: pgknexlove.default.getConnectionInfo(),
   schemas: [
     {
       name: "api",

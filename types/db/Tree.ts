@@ -1,7 +1,7 @@
 // @generated
 // Automatically generated. Don't change this file manually.
 
-export type TreeId = string & { " __flavor"?: 'tree' };
+export type TreeId = string & { " __flavor"?: "tree" };
 
 export default interface Tree {
   /** Primary key. Index: tree_pkey */
