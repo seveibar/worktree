@@ -18,7 +18,9 @@
     "typescript": "^4.3.5"
   },
   "devDependencies": {
+    "@kristiandupont/recase": "^1.1.1",
     "ava": "^3.15.0",
+    "kanel": "^2.3.0",
     "nodemon": "^2.0.12",
     "now": "^21.0.1"
   },
@@ -30,7 +32,7 @@
     "start:local:watch": "nodemon dist/server",
     "start": "now dev -A ./scripts/now.dev.json",
     "start:proxy": "now dev -A ./scripts/now.proxy.json",
-    "db:migrate": "node-pg-migrate up --ignore-pattern '.*\\.map|.*\\.ts' -m dist/db/migrations && pg_dump -h localhost -U postgres -s > db/structure.sql",
+    "db:migrate": "node-pg-migrate up --ignore-pattern '.*\\.map|.*\\.ts' -m dist/db/migrations && pg_dump -h localhost -U postgres -s > db/structure.sql && kanel",
     "db:create-migration": "node-pg-migrate -m dist/db/migrations create",
     "copytoproxy": "cd scripts && ./copy-to-proxy.sh"
   },
